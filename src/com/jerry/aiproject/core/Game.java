@@ -196,7 +196,6 @@ public class Game extends JPanel implements Runnable {
 
         g.setColor(Color.RED);
         g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
-
 		g.dispose();
 	}
 
