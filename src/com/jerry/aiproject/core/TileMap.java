@@ -29,10 +29,12 @@ public class TileMap {
 		mapHeight = mHeight;
 		tileWidth = tWidth;
 		tileHeight = tHeight;
-		
-		tileState = new boolean[getRows()][getCols()];
-		tiles = new TileType[getRows()][getCols()];
-		visited = new boolean[getRows()][getCols()];
+
+        int rows = getRows();
+        int cols = getCols();
+        tileState = new boolean[rows][cols];
+        tiles = new TileType[rows][cols];
+        visited = new boolean[rows][cols];
 		loadTiles();
 	}
 	
