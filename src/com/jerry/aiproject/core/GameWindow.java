@@ -1,6 +1,7 @@
 package com.jerry.aiproject.core;
 
 import javax.swing.JFrame;
+import java.awt.*;
 
 /**
  * This class contains the main method. 
@@ -20,7 +21,7 @@ public class GameWindow extends JFrame {
 		setTitle("AI Project");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		setResizable(false);
+		//setResizable(false);
 		setVisible(true);
 	}
 
