@@ -1,6 +1,6 @@
 package com.jerry.aiproject.core;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import com.jerry.aiproject.utils.SpriteLoader;
@@ -235,9 +235,17 @@ public class TileMap {
 			for(int col = 0; col < tiles[row].length; col++)
 			{
 				if(tiles[row][col] == TileType.GRASS)
-					g.drawImage(grass, col * 32, row * 48, col + 1 * 32, row + 1 * 48, null);
+				{
+					g.drawImage(grass, col * 32, row * 48, col + 32, row + 48, null);
+                    g.setColor(Color.RED);
+                    g.drawRect(col * 32, row * 48, col + 32, row + 48);
+				}
 				else if(tiles[row][col] == TileType.LAVA)
-					g.drawImage(lava, col * 32, row * 48, col + 1 * 32, row + 1 * 48, null);
+				{
+					g.drawImage(lava, col * 32, row * 48, col + 32, row + 48, null);
+                    g.setColor(Color.RED);
+                    g.drawRect(col * 32, row * 48, col + 32, row + 48);
+				}
 			}
 		}
 	}
