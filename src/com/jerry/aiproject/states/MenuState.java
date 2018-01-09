@@ -3,6 +3,9 @@ package com.jerry.aiproject.states;
 import com.jerry.aiproject.core.Game;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -11,16 +14,19 @@ import java.awt.geom.Rectangle2D;
  * menu with the game options.
  * @author Jerry
  */
-public class MenuState extends GameState {
+public class MenuState extends GameState implements MouseMotionListener {
 
     // Rectangles surrounding the texts.
     private FontMetrics fontMetrics;
     // Metrics for getting the rectanlges surrounding the drawn strings.
     private Rectangle2D titleRect, playButtonRect, quitButtonRect;
     private final int PADDING = 8; // Padding for the rectangles surrounding the boxes.
+    // Values to check if the mouse is over the buttons.
+    private boolean hoveringPlay = false, hoveringQuit = false;
 
     public MenuState(int width, int height) {
         super(width, height);
+        init();
     }
 
     @Override
@@ -30,6 +36,7 @@ public class MenuState extends GameState {
 //
 //        add(playButton);
 //        add(exitButton);
+        addMouseMotionListener(this);
     }
 
     @Override
@@ -86,6 +93,11 @@ public class MenuState extends GameState {
     }
 
     private void drawPlayButton(Graphics2D g2d) {
+        if(hoveringPlay)
+            g2d.setColor(Color.CYAN);
+        else if(!hoveringPlay)
+            g2d.setColor(Color.WHITE);
+
         String playButtonText = "Play";
         playButtonRect = fontMetrics.getStringBounds(playButtonText, g2d);
         int width = (int)playButtonRect.getWidth();
@@ -107,10 +119,15 @@ public class MenuState extends GameState {
     }
 
     private void drawQuitButton(Graphics2D g2d) {
+        if(hoveringQuit)
+            g2d.setColor(Color.RED);
+        else if(!hoveringQuit)
+            g2d.setColor(Color.WHITE);
+
         String playButtonText = "Quit";
-        playButtonRect = fontMetrics.getStringBounds(playButtonText, g2d);
-        int width = (int)playButtonRect.getWidth();
-        int height = (int)playButtonRect.getHeight();
+        quitButtonRect = fontMetrics.getStringBounds(playButtonText, g2d);
+        int width = (int)quitButtonRect.getWidth();
+        int height = (int)quitButtonRect.getHeight();
         // Calculate the play button's draw location.
         int x = (Game.WIDTH/2) - (width/2);
         int y = (Game.HEIGHT/2) + height * 3;
@@ -118,12 +135,37 @@ public class MenuState extends GameState {
         g2d.drawString(playButtonText, x, y);
         // Fonts are rendered from a baseline that runs along the bottom of the text.
         // Subtracting the 'ascent' removes that displacement.
-        playButtonRect = new Rectangle(
+        quitButtonRect = new Rectangle(
                 x - PADDING,
                 y - fontMetrics.getAscent(),
                 width + PADDING * 2,
                 height
         );
-        g2d.draw(playButtonRect);
+        g2d.draw(quitButtonRect);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent mouseEvent) {}
+
+    @Override
+    public void mouseMoved(MouseEvent mouseEvent) {
+        int mouseX = mouseEvent.getX();
+        int mouseY = mouseEvent.getY();
+        if(playButtonRect.contains(mouseX, mouseY))
+        {
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            hoveringPlay = true;
+        }
+        else if(quitButtonRect.contains(mouseX, mouseY))
+        {
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            hoveringQuit = true;
+        }
+        else
+        {
+            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            hoveringPlay = false;
+            hoveringQuit = false;
+        }
     }
 }
