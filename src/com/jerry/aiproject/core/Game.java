@@ -1,23 +1,22 @@
 package com.jerry.aiproject.core;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Random;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import com.jerry.aiproject.core.TileMap.TileType;
-import com.jerry.aiproject.gameobjects.*;
-import com.jerry.aiproject.gameobjects.Weapon.WeaponType;
-import com.jerry.aiproject.utils.*;
-import com.jerry.aiproject.aialgorithms.*;
+import com.jerry.aiproject.states.GameState;
+import com.jerry.aiproject.states.PlayState;
+import com.jerry.aiproject.states.MenuState;
 
 /**
- * This is the heart of the game and
- * runs the game loop. This will also 
- * be the panel which holds the game.
+ * This class contains the main method.
+ * It is also the JFrame container for
+ * the whole game. This is also the heart
+ * of the game and runs the game loop.
+ * This will also be the panel which
+ * holds the game.
  * @author Jerry
  */
-public class Game extends JPanel implements Runnable {
+public class Game extends JFrame implements Runnable {
 	
 	//TODO Make diagonal animation smoother.
 	//TODO Allow for BFS to find a diagonal path.
@@ -31,29 +30,22 @@ public class Game extends JPanel implements Runnable {
     * Enter is being pressed after getting the first item to generate a new path and get the third item,
     * had to increase height of second item to generate collision.*/
 
-	//The dimensions of the panel. 
+	//The dimensions of the window.
 	public static final int WIDTH = 640, HEIGHT = 720; //20*32px X 15*48
 	
-	private TileMap tileMap; //The map of the game.
-	private Path path;
-	private Player player; //The player of the game. 
-	private GameObjectSpawner spawner; //Controls the spawning of GameObjects. 
-	private SpriteLoader loader; //Utility class that loads sprites. 
-	
-	private Thread thread; //The thread the game will be running on. 
-	private Random rand; //TEST. Might need for enemies...
-	private boolean inGame; //Flag for determining when the game starts/ends.
-	
-	private AStarSearch aStar;
-	
-	private boolean startWalk = false; //For recording purposes.
-	private boolean generateNewPath; //USe to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
-	
+	private Thread thread; //The thread the game will be running on.
+	private boolean isRunning; //Flag for determining when the game starts/ends.
+    private boolean inMenu = true; //Flag to determine if the game is in the MenuState.
+    private boolean inGame = false; //Flag to determine if the game is in the PlayState.
+    private GameState currentState; //The current GameState being used.
+
 	public Game() {
-		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		setFocusable(true);
-		setDoubleBuffered(true);
-		
+        setTitle("AI Project");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        //setResizable(false);
+        setVisible(true);
+
 		thread = new Thread(this); //Create a new Thread, can use 'this' since Runnable is implemented.
 		thread.start(); //Start the thread AKA call run. 
 	}
@@ -77,7 +69,7 @@ public class Game extends JPanel implements Runnable {
 		int frames = 0; //Counts the number of frames. 
 		
 		//Game Loop
-		while(inGame)
+		while(isRunning)
 		{
 			long currentTime = System.nanoTime(); //Get the time.
 			delta += (currentTime - lastTime)/ns; //Subtract the differences of time and divide by '1 second'
@@ -89,8 +81,9 @@ public class Game extends JPanel implements Runnable {
 				updates++; //Increment for print out message. 
 				delta--; //Decrement delta to test for 1 second again. 
 			}
-			repaint(); //Call paint, not in loop since we want our computer to draw as fast as possible.
-			frames++; //Increment for print out message. 
+			//repaint(); //Calls paint, not in loop since we want our computer to draw as fast as possible.
+			render();
+            frames++; //Increment for print out message.
 					
 			if(System.currentTimeMillis() - timer > 1000) //Print every second, not in loop so we can get render counts.
 			{
@@ -104,100 +97,27 @@ public class Game extends JPanel implements Runnable {
 	
 	/**
 	 * This method initializes the 
-	 * game related objects. 
+	 * core variables and MenuState.
 	 */
 	public void init() {
-		inGame = true; //The game has started.
-		addKeyListener(new KeyInput()); //Add custom inner class key listener for player movement.
-		
-		loader = new SpriteLoader("res/loveless_ritsuka.png"); //Load the sprite sheet. 
-	
-		//Create and fill the map, and create the lava river.
-		tileMap = new TileMap(WIDTH, HEIGHT, 32, 48); 
-		tileMap.fillMap(TileType.GRASS, true);  
-		tileMap.fillCol(TileType.LAVA, 2, false); 
-		
-		//Create the player and the GameObjectSpawner to spawn GameObjects.
-		player = new Player(tileMap.getXCoord(5), tileMap.getYCoord(5)); 
-		spawner = new GameObjectSpawner();
-		
-		//Add the items.
-		spawner.spawn(new HealthPotion(tileMap.getXCoord(15)/*(10)*/, tileMap.getYCoord/*(12)*/(14)));
-		spawner.spawn(new Weapon(tileMap.getXCoord(7), tileMap.getYCoord(3), WeaponType.AX));
-		spawner.spawn(new Weapon(tileMap.getXCoord(10), tileMap.getYCoord(3), WeaponType.SWORD));
-		spawner.spawn(new Weapon(tileMap.getXCoord(13), tileMap.getYCoord(3), WeaponType.BOW));
-		
-		aStar = new AStarSearch(tileMap, 100, true);
-		path = aStar.findPath(player, spawner.getObject(0));
-//		BreadthFirstSearch breadthFirst = new BreadthFirstSearch(tileMap, 100);
-//		path = breadthFirst.findPath(player, spawner.getObject(0));
+		isRunning = true; //The game has running.
+        currentState = new MenuState(WIDTH, HEIGHT); // By default the menu should show up first.
+
+        add(currentState);
+        pack();
 	}
+
+	public void switchStateTo(GameState newState) {
+        currentState = newState;
+    }
 	
 	public void update() {
-		player.update();
-
-		if(startWalk) //For recording purposes.
-		{	
-			generateNewPath = player.moveAlongPath(tileMap, path);
-			System.out.println(generateNewPath);
-			//Check if the player is colliding with any object.
-			GameObject collidingObject = spawner.checkCollision(player);
-			if(collidingObject != null) 
-			{
-				if(collidingObject instanceof Weapon)
-				{
-					System.err.println("Got a weapon!");
-					spawner.removeObject(collidingObject);
-				}
-				else if(collidingObject instanceof HealthPotion) 
-				{
-					System.err.println("Got a potion!");
-					spawner.removeObject(collidingObject);
-					if(player.health != 200)
-						player.health += 150;
-				}
-			}
-			if(generateNewPath)
-			{
-				startWalk = false;
-				path = aStar.findPath(player, spawner.getObject(0));
-				generateNewPath = false;
-			}
-		}
-
-
-//		//TEST: Works!!
-//		if(spawner != null && player.getBounds().intersects(spawner.getObject(0).getBounds()))
-//		{
-//			if(player.health != 200)
-//				player.health += 150;
-//			spawner.removeObject(spawner.getObject(0));
-//			spawner = null;
-//
-//			//Display a message and exit the game.
-//			JOptionPane.showMessageDialog(this, "Player got the potion!");
-//			System.exit(0);
-//		}
+        currentState.update();
 	}
 	
-	public void render(Graphics g) {
-		//Draw the map first, due to overlap.
-		tileMap.render(g);  
-		player.render(g);
-		if(spawner != null)
-			spawner.render(g);
-	}
-	
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-		
-		render(g);
-
-        g.setColor(Color.RED);
-        g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
-		g.dispose();
-	}
+	public void render() {
+        currentState.repaint();
+    }
 
     /**
      * For frame collision detection.
@@ -206,22 +126,9 @@ public class Game extends JPanel implements Runnable {
     public Rectangle getBounds() {
         return new Rectangle(0, 0, Game.WIDTH, Game.HEIGHT);
     }
-	
-	/**
-	 * Private inner class for player movement.
-	 */
-	private class KeyInput extends KeyAdapter {
-		@Override
-		public void keyPressed(KeyEvent e) {
-			player.keyPressed(e.getKeyCode());
-			
-			//For recording purposes.
-			if(e.getKeyCode() == KeyEvent.VK_ENTER)
-				startWalk = true;
-		}
-		@Override
-		public void keyReleased(KeyEvent e){
-			player.keyReleased(e.getKeyCode());
-		}
-	}
+
+
+    public static void main(String[] args) {
+        new Game();
+    }
 }

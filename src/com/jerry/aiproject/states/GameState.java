@@ -4,7 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Created by jerry on 1/9/18.
+ * Parent abstract class for all
+ * Game states, it won't be
+ * directly instantiated.
+ * @author Jerry
  */
 public abstract class State extends JPanel {
 
@@ -17,5 +20,15 @@ public abstract class State extends JPanel {
     public abstract void init();
     public abstract void update();
     public abstract void render(Graphics g);
+
+    public void paint(Graphics g) {
+        super.paint(g);
+
+        render(g);
+
+//        g.setColor(Color.RED);
+//        g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+        g.dispose();
+    }
 
 }
