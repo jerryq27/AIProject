@@ -9,9 +9,9 @@ import java.awt.*;
  * directly instantiated.
  * @author Jerry
  */
-public abstract class State extends JPanel {
+public abstract class GameState extends JPanel {
 
-    public State(int width, int height) {
+    public GameState(int width, int height) {
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
         setDoubleBuffered(true);
