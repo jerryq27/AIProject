@@ -100,7 +100,7 @@ public class Game extends JFrame implements Runnable {
         isRunning = true; //The game has running.
 
         // By default, the game should start with the menu state.
-        currentState = new MenuState(WIDTH, HEIGHT); // By default the menu should show up first.
+        currentState = new MenuState(this, WIDTH, HEIGHT); // By default the menu should show up first.
         add(currentState);
         pack();
 
