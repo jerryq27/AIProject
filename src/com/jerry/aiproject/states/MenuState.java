@@ -24,8 +24,8 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
     // Values to check if the mouse is over the buttons.
     private boolean hoveringPlay = false, hoveringQuit = false;
 
-    public MenuState(Game game, int width, int height) {
-        super(game, width, height);
+    public MenuState(Game game) {
+        super(game);
         init();
     }
 
@@ -175,7 +175,7 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
         if(playButtonRect.contains(mouseX, mouseY))
         {
             System.out.println("Clicked play!");
-            game.switchStateTo(new PlayState(game, Game.WIDTH, Game.HEIGHT));
+            game.switchStateTo(new PlayState(game));
         }
         else if(quitButtonRect.contains(mouseX, mouseY))
         {

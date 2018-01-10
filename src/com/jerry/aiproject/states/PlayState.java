@@ -35,15 +35,15 @@ public class PlayState extends GameState {
     private boolean startWalk = false; //For recording purposes.
     private boolean generateNewPath; //USe to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
 
-    public PlayState(Game game, int width, int height) {
-        super(game, width, height);
+    public PlayState(Game game) {
+        super(game);
         init();
     }
 
     @Override
     public void init() {
         inGame = true; //The game has started.
-        addKeyListener(new PlayState.KeyInput()); //Add custom inner class key listener for player movement.
+        addKeyListener(new KeyInput()); //Add custom inner class key listener for player movement.
 
         loader = new SpriteLoader("res/loveless_ritsuka.png"); //Load the sprite sheet.
 
@@ -132,11 +132,14 @@ public class PlayState extends GameState {
     private class KeyInput extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
+            System.out.println("ARE WE EVEN HERE?");
             player.keyPressed(e.getKeyCode());
 
             //For recording purposes.
-            if(e.getKeyCode() == KeyEvent.VK_ENTER)
+            if(e.getKeyCode() == KeyEvent.VK_ENTER) {
                 startWalk = true;
+                System.out.println("pressing enter...");
+            }
         }
         @Override
         public void keyReleased(KeyEvent e){

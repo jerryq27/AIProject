@@ -109,9 +109,9 @@ public class Game extends JFrame implements Runnable {
         baseStatePanel = new JPanel();
 
         // By default, the game should start with the menu state.
-        currentState = new MenuState(this, WIDTH, HEIGHT); // By default the menu should show up first.
+        currentState = new MenuState(this);
         baseStatePanel.add(currentState);
-        add(baseStatePanel); // Add the base panel instead of the GameState Panel to fix rendering issues.
+        add(baseStatePanel); // Add the base panel instead of a GameState Panel to fix rendering issues.
         pack();
 
         setLocationRelativeTo(null);
