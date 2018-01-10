@@ -175,6 +175,7 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
         if(playButtonRect.contains(mouseX, mouseY))
         {
             System.out.println("Clicked play!");
+            game.switchStateTo(new PlayState(game, Game.WIDTH, Game.HEIGHT));
         }
         else if(quitButtonRect.contains(mouseX, mouseY))
         {
