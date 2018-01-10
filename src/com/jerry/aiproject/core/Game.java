@@ -40,12 +40,6 @@ public class Game extends JFrame implements Runnable {
     private GameState currentState; //The current GameState being used.
 
 	public Game() {
-        setTitle("AI Project");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        //setResizable(false);
-        setVisible(true);
-
 		thread = new Thread(this); //Create a new Thread, can use 'this' since Runnable is implemented.
 		thread.start(); //Start the thread AKA call run. 
 	}
@@ -100,11 +94,20 @@ public class Game extends JFrame implements Runnable {
 	 * core variables and MenuState.
 	 */
 	public void init() {
-		isRunning = true; //The game has running.
-        currentState = new MenuState(WIDTH, HEIGHT); // By default the menu should show up first.
+        // Set values for the JFrame and game loop.
+        setTitle("AI Project");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        isRunning = true; //The game has running.
 
+        // By default, the game should start with the menu state.
+        currentState = new MenuState(WIDTH, HEIGHT); // By default the menu should show up first.
         add(currentState);
         pack();
+
+        // Fix for centering the window: First pack, then set the location, then set the visibility.
+        setLocationRelativeTo(null);
+        //setResizable(false);
+        setVisible(true);
 	}
 
 	public void switchStateTo(GameState newState) {
