@@ -3,8 +3,8 @@ package com.jerry.aiproject.states;
 import com.jerry.aiproject.core.Game;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 
@@ -14,7 +14,7 @@ import java.awt.geom.Rectangle2D;
  * menu with the game options.
  * @author Jerry
  */
-public class MenuState extends GameState implements MouseMotionListener {
+public class MenuState extends GameState implements MouseListener, MouseMotionListener {
 
     // Rectangles surrounding the texts.
     private FontMetrics fontMetrics;
@@ -37,6 +37,7 @@ public class MenuState extends GameState implements MouseMotionListener {
 //        add(playButton);
 //        add(exitButton);
         addMouseMotionListener(this);
+        addMouseListener(this);
     }
 
     @Override
@@ -147,6 +148,10 @@ public class MenuState extends GameState implements MouseMotionListener {
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {}
 
+    /**
+     * This method will detect if the mouse is over
+     * the buttons and add an animation on hover.
+     */
     @Override
     public void mouseMoved(MouseEvent mouseEvent) {
         int mouseX = mouseEvent.getX();
@@ -168,4 +173,30 @@ public class MenuState extends GameState implements MouseMotionListener {
             hoveringQuit = false;
         }
     }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        int mouseX = mouseEvent.getX();
+        int mouseY = mouseEvent.getY();
+        if(playButtonRect.contains(mouseX, mouseY))
+        {
+            System.out.println("Clicked play!");
+        }
+        else if(quitButtonRect.contains(mouseX, mouseY))
+        {
+            System.exit(0);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {}
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {}
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {}
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {}
 }
