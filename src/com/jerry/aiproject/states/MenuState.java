@@ -24,18 +24,13 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
     // Values to check if the mouse is over the buttons.
     private boolean hoveringPlay = false, hoveringQuit = false;
 
-    public MenuState(int width, int height) {
-        super(width, height);
+    public MenuState(Game game, int width, int height) {
+        super(game, width, height);
         init();
     }
 
     @Override
     public void init() {
-//        JButton playButton = new JButton("Play");
-//        JButton exitButton = new JButton("Exit");
-//
-//        add(playButton);
-//        add(exitButton);
         addMouseMotionListener(this);
         addMouseListener(this);
     }
@@ -46,8 +41,7 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
     }
 
     @Override
-    public void render(Graphics g) {
-        Graphics2D g2d = (Graphics2D)g;
+    public void render(Graphics2D g2d) {
         // Set up anti-aliasing.
         g2d.setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,

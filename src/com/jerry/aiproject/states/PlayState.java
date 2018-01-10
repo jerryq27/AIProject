@@ -35,8 +35,8 @@ public class PlayState extends GameState {
     private boolean startWalk = false; //For recording purposes.
     private boolean generateNewPath; //USe to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
 
-    public PlayState(int width, int height) {
-        super(width, height);
+    public PlayState(Game game, int width, int height) {
+        super(game, width, height);
         init();
     }
 
@@ -117,12 +117,12 @@ public class PlayState extends GameState {
     }
 
     @Override
-    public void render(Graphics g) {
+    public void render(Graphics2D g2d) {
         //Draw the map first, due to overlap.
-        tileMap.render(g);
-        player.render(g);
+        tileMap.render(g2d);
+        player.render(g2d);
         if(spawner != null)
-            spawner.render(g);
+            spawner.render(g2d);
     }
 
 
