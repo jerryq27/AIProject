@@ -1,5 +1,7 @@
 package com.jerry.aiproject.states;
 
+import com.jerry.aiproject.core.Game;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,7 +13,10 @@ import java.awt.*;
  */
 public abstract class GameState extends JPanel {
 
-    public GameState(int width, int height) {
+    protected Game game; // Game object that the GameStates need for switching states.
+
+    public GameState(Game game, int width, int height) {
+        this.game = game;
         setPreferredSize(new Dimension(width, height));
         setFocusable(true);
         setDoubleBuffered(true);
@@ -19,15 +24,16 @@ public abstract class GameState extends JPanel {
 
     public abstract void init();
     public abstract void update();
-    public abstract void render(Graphics g);
+    public abstract void render(Graphics2D g2d);
 
-    public void paint(Graphics g) {
-        super.paint(g);
+    /* Recommended to override paintComponent rather then Paint */
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-        render(g);
+        // Using Graphics2D rather than Graphics for more 2D functionality.
+        render((Graphics2D)g);
 
-//        g.setColor(Color.RED);
-//        g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
         g.dispose();
     }
 
