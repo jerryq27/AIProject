@@ -14,26 +14,31 @@ import com.jerry.aiproject.utils.SpriteLoader;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.Random;
 
 /**
- * Created by jerry on 1/9/18.
+ * This is the play state of the game.
+ * This will display the game and
+ * handle the main rendering of the game,
+ * game events, and all other game logic.
+ * @author Jerry
  */
 public class PlayState extends GameState {
 
-    private TileMap tileMap; //The map of the game.
+    private TileMap tileMap; // The map of the game.
     private Path path;
-    private Player player; //The player of the game.
-    private GameObjectSpawner spawner; //Controls the spawning of GameObjects.
-    private SpriteLoader loader; //Utility class that loads sprites.
+    private Player player; // The player of the game.
+    private GameObjectSpawner spawner; // Controls the spawning of GameObjects.
+    private SpriteLoader loader; // Utility class that loads sprites.
 
-    private Random rand; //TEST. Might need for enemies...
-    private boolean inGame; //Flag for determining when the game starts/ends.
+    private Random rand; // TEST. Might need for enemies...
 
     private AStarSearch aStar;
 
-    private boolean startWalk = false; //For recording purposes.
-    private boolean generateNewPath; //USe to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
+    private boolean startWalk = false; // For recording purposes.
+    private boolean generateNewPath; // Used to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
 
     public PlayState(Game game) {
         super(game);
@@ -42,21 +47,18 @@ public class PlayState extends GameState {
 
     @Override
     public void init() {
-        inGame = true; //The game has started.
-        addKeyListener(new KeyInput()); //Add custom inner class key listener for player movement.
+        loader = new SpriteLoader("res/loveless_ritsuka.png"); // Load the sprite sheet.
 
-        loader = new SpriteLoader("res/loveless_ritsuka.png"); //Load the sprite sheet.
-
-        //Create and fill the map, and create the lava river.
-        tileMap = new TileMap(Game.WIDTH, Game.HEIGHT, 32, 48);
+        // Create and fill the map, and create the lava river.
+        tileMap = new TileMap(Game.WIDTH, Game.HEIGHT, Game.WIDTH/20, Game.HEIGHT/15);
         tileMap.fillMap(TileMap.TileType.GRASS, true);
         tileMap.fillCol(TileMap.TileType.LAVA, 2, false);
 
-        //Create the player and the GameObjectSpawner to spawn GameObjects.
+        // Create the player and the GameObjectSpawner to spawn GameObjects.
         player = new Player(tileMap.getXCoord(5), tileMap.getYCoord(5));
         spawner = new GameObjectSpawner();
 
-        //Add the items.
+        // Add the items.
         spawner.spawn(new HealthPotion(tileMap.getXCoord(15)/*(10)*/, tileMap.getYCoord/*(12)*/(14)));
         spawner.spawn(new Weapon(tileMap.getXCoord(7), tileMap.getYCoord(3), Weapon.WeaponType.AX));
         spawner.spawn(new Weapon(tileMap.getXCoord(10), tileMap.getYCoord(3), Weapon.WeaponType.SWORD));
@@ -66,17 +68,37 @@ public class PlayState extends GameState {
         path = aStar.findPath(player, spawner.getObject(0));
 //		BreadthFirstSearch breadthFirst = new BreadthFirstSearch(tileMap, 100);
 //		path = breadthFirst.findPath(player, spawner.getObject(0));
+
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent keyEvent) {
+                super.keyTyped(keyEvent);
+                if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER)
+                    System.out.println("Does this work?????");
+            }
+        });
+        //addKeyListener(new KeyInput()); // Add custom inner class key listener for player movement.
+        addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent mouseEvent) {
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent mouseEvent) {
+                System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
+            }
+        });
     }
 
     @Override
     public void update() {
         player.update();
 
-        if(startWalk) //For recording purposes.
+        if(startWalk) // For recording purposes.
         {
             generateNewPath = player.moveAlongPath(tileMap, path);
             System.out.println(generateNewPath);
-            //Check if the player is colliding with any object.
+            // Check if the player is colliding with any object.
             GameObject collidingObject = spawner.checkCollision(player);
             if(collidingObject != null)
             {
@@ -102,7 +124,7 @@ public class PlayState extends GameState {
         }
 
 
-//		//TEST: Works!!
+//		// TEST: Works!!
 //		if(spawner != null && player.getBounds().intersects(spawner.getObject(0).getBounds()))
 //		{
 //			if(player.health != 200)
@@ -118,7 +140,7 @@ public class PlayState extends GameState {
 
     @Override
     public void render(Graphics2D g2d) {
-        //Draw the map first, due to overlap.
+        // Draw the map first, due to overlap.
         tileMap.render(g2d);
         player.render(g2d);
         if(spawner != null)
@@ -135,7 +157,7 @@ public class PlayState extends GameState {
             System.out.println("ARE WE EVEN HERE?");
             player.keyPressed(e.getKeyCode());
 
-            //For recording purposes.
+            // For recording purposes.
             if(e.getKeyCode() == KeyEvent.VK_ENTER) {
                 startWalk = true;
                 System.out.println("pressing enter...");
