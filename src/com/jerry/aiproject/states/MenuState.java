@@ -3,9 +3,7 @@ package com.jerry.aiproject.states;
 import com.jerry.aiproject.core.Game;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -51,7 +49,8 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
 
         g2d.setColor(Color.WHITE);
         g2d.setStroke(new BasicStroke(2));
-        g2d.drawRect(0, 0, Game.WIDTH, Game.HEIGHT);
+        // The border gets draw right on the edge, subtracting 1 ensures the full stroke is within the JFrame.
+        g2d.drawRect(0, 0, Game.WIDTH - 1, Game.HEIGHT - 1);
 
         // Set up the text values for drawing strings.
         Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 50);
@@ -174,8 +173,7 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
         int mouseY = mouseEvent.getY();
         if(playButtonRect.contains(mouseX, mouseY))
         {
-            System.out.println("Clicked play!");
-            game.switchStateTo(new PlayState(game));
+            game.switchStateTo("Play");
         }
         else if(quitButtonRect.contains(mouseX, mouseY))
         {
