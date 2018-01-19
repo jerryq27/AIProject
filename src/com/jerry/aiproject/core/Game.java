@@ -1,6 +1,8 @@
 package com.jerry.aiproject.core;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import javax.swing.*;
 
 import com.jerry.aiproject.states.*;
@@ -42,14 +44,18 @@ public class Game extends JFrame implements Runnable {
     * had to increase height of second item to generate collision.*/
 
 	// The dimensions of the window.
-	public static final int WIDTH = 640, HEIGHT = 720; // 20*32px X 15*48
+	public static final int WIDTH = 640, HEIGHT = 720; // 20*32px X 15*48px
 	
 	private Thread thread; // The thread the game will be running on.
 	private boolean isRunning; // Flag for determining when the game starts/ends.
     private GameState currentState; // The current GameState being used.
-    private JPanel baseStatePanel; // Panel to add state panels to.
+    private JPanel stateCardsPanel; // Panel to add state panels to.
+    private CardLayout cardSwitcher; // CardLayout controls the switching of panels.
+    private MenuState menuState; // The Menu JPanel.
+    private PlayState playState; // The Game JPanel.
 
 	public Game() {
+        super();
         init();
 		thread = new Thread(this); //Create a new Thread, can use 'this' since Runnable is implemented.
 		thread.start(); //Start the thread AKA call run. 
@@ -106,12 +112,21 @@ public class Game extends JFrame implements Runnable {
         setTitle("AI Project");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         isRunning = true; // The game has running.
-        baseStatePanel = new JPanel();
 
+        stateCardsPanel = new JPanel();
+		stateCardsPanel.setLayout(new CardLayout());
+        cardSwitcher = (CardLayout)stateCardsPanel.getLayout();
+
+        menuState = new MenuState(this);
+        playState = new PlayState(this);
         // By default, the game should start with the menu state.
-        currentState = new MenuState(this);
-        baseStatePanel.add(currentState);
-        add(baseStatePanel); // Add the base panel instead of a GameState Panel to fix rendering issues.
+        currentState = menuState;
+
+        stateCardsPanel.add(menuState, "Menu");
+		stateCardsPanel.add(playState, "Play");
+		stateCardsPanel.setPreferredSize(new Dimension(Game.WIDTH, Game.HEIGHT));
+
+		add(stateCardsPanel); // Add the base panel instead of a GameState Panel to fix rendering issues.
         pack();
 
         setLocationRelativeTo(null);
@@ -119,13 +134,13 @@ public class Game extends JFrame implements Runnable {
         setVisible(true);
 	}
 
-	public void switchStateTo(GameState newState) {
-        baseStatePanel.removeAll();
-        currentState = newState;
-        baseStatePanel.add(currentState);
-        pack();
-        baseStatePanel.revalidate();
-        baseStatePanel.repaint();
+	public void switchStateTo(String state) {
+		if(state.equals("Play"))
+		    currentState = playState;
+        else if(state.equals("Menu"))
+            currentState = menuState;
+
+        cardSwitcher.show(stateCardsPanel, state);
     }
 	
 	public void update() {
