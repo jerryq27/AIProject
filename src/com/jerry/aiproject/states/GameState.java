@@ -16,12 +16,12 @@ public abstract class GameState extends JPanel {
     protected Game game; // Game object that the GameStates need for switching states.
 
     public GameState(Game game) {
+        super();
         this.game = game;
         setPreferredSize(new Dimension(Game.WIDTH, Game.HEIGHT));
         setFocusable(true);
         setDoubleBuffered(true);
     }
-
     public abstract void init();
     public abstract void update();
     public abstract void render(Graphics2D g2d);
