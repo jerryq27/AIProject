@@ -236,15 +236,15 @@ public class TileMap {
 			{
 				if(tiles[row][col] == TileType.GRASS)
 				{
-					g.drawImage(grass, col * 32, row * 48, col + 32, row + 48, null);
+					g.drawImage(grass, col * tileWidth, row * tileHeight, tileWidth, tileHeight, null);
                     g.setColor(Color.RED);
-                    g.drawRect(col * 32, row * 48, col + 32, row + 48);
+                    g.drawRect(col * tileWidth, row * tileHeight, tileWidth, tileHeight);
 				}
 				else if(tiles[row][col] == TileType.LAVA)
 				{
-					g.drawImage(lava, col * 32, row * 48, col + 32, row + 48, null);
+					g.drawImage(lava, col * tileWidth, row * tileHeight, tileWidth, tileHeight, null);
                     g.setColor(Color.RED);
-                    g.drawRect(col * 32, row * 48, col + 32, row + 48);
+                    g.drawRect(col * tileWidth, row * tileHeight, tileWidth, tileHeight);
 				}
 			}
 		}
