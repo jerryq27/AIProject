@@ -11,11 +11,10 @@ import com.jerry.aiproject.utils.GameObjectSpawner;
 import com.jerry.aiproject.utils.Path;
 import com.jerry.aiproject.utils.SpriteLoader;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -39,6 +38,8 @@ public class PlayState extends GameState {
 
     private boolean startWalk = false; // For recording purposes.
     private boolean generateNewPath; // Used to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
+
+    private PlayKeyInput playKeyInput;
 
     public PlayState(Game game) {
         super(game);
@@ -68,15 +69,6 @@ public class PlayState extends GameState {
         path = aStar.findPath(player, spawner.getObject(0));
 //		BreadthFirstSearch breadthFirst = new BreadthFirstSearch(tileMap, 100);
 //		path = breadthFirst.findPath(player, spawner.getObject(0));
-
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent keyEvent) {
-                super.keyTyped(keyEvent);
-                if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER)
-                    System.out.println("Does this work?????");
-            }
-        });
         //addKeyListener(new KeyInput()); // Add custom inner class key listener for player movement.
         addMouseMotionListener(new MouseMotionListener() {
             @Override
@@ -88,6 +80,8 @@ public class PlayState extends GameState {
                 System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
             }
         });
+        playKeyInput = new PlayKeyInput(this);
+        playKeyInput.setUpKeyBindings();
     }
 
     @Override
@@ -147,7 +141,6 @@ public class PlayState extends GameState {
             spawner.render(g2d);
     }
 
-
     /**
      * Private inner class for player movement.
      */
@@ -166,6 +159,84 @@ public class PlayState extends GameState {
         @Override
         public void keyReleased(KeyEvent e){
             player.keyReleased(e.getKeyCode());
+        }
+    }
+
+    private class PlayKeyInput {
+
+        private InputMap inputMap;
+        private ActionMap actionMap;
+        private HashMap<Integer, String> movementKeyMap;
+        private HashMap<Integer, String> optionsKeyMap;
+
+        /* Possible actions in the play state.*/
+        // Movement actions.
+        public static final String
+                MOVE_UP = "Up",
+                MOVE_LEFT = "Left",
+                MOVE_DOWN = "Down",
+                MOVE_RIGHT = "Right";
+        // Other actions.
+        public static final String
+                GOTO_MENU = "SwitchToMenu",
+                TEST = "StartWalk";
+
+        public PlayKeyInput(JPanel playState) {
+            inputMap = playState.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+            actionMap = playState.getActionMap();
+
+            createKeyMaps();
+        }
+
+        private void createKeyMaps() {
+            movementKeyMap = new HashMap<>();
+            optionsKeyMap = new HashMap<>();
+
+            /* Movement keys. */
+            movementKeyMap.put(KeyEvent.VK_W, MOVE_UP);
+            movementKeyMap.put(KeyEvent.VK_A, MOVE_LEFT);
+            movementKeyMap.put(KeyEvent.VK_S, MOVE_DOWN);
+            movementKeyMap.put(KeyEvent.VK_D, MOVE_RIGHT);
+
+            movementKeyMap.put(KeyEvent.VK_UP, MOVE_UP);
+            movementKeyMap.put(KeyEvent.VK_LEFT, MOVE_LEFT);
+            movementKeyMap.put(KeyEvent.VK_DOWN, MOVE_DOWN);
+            movementKeyMap.put(KeyEvent.VK_RIGHT, MOVE_RIGHT);
+
+            /* Option keys */
+            optionsKeyMap.put(KeyEvent.VK_ESCAPE, GOTO_MENU);
+            optionsKeyMap.put(KeyEvent.VK_ENTER, TEST);
+        }
+
+        public void setUpKeyBindings() {
+            for(Integer key : movementKeyMap.keySet())
+            {
+
+            }
+
+            for(Integer key : optionsKeyMap.keySet())
+            {
+                String action = optionsKeyMap.get(key);
+                inputMap.put(KeyStroke.getKeyStroke(key, 0), action);
+                actionMap.put(action, new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        String action = optionsKeyMap.get(key);
+                        switch(action)
+                        {
+                            case GOTO_MENU:
+                                game.switchStateTo("Menu");
+                                break;
+                            case TEST:
+                                startWalk = true;
+                                break;
+                            default:
+                                System.out.println(action);
+                                break;
+                        }
+                    }
+                });
+            }
         }
     }
 }
