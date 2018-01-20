@@ -31,15 +31,14 @@ public class PlayState extends GameState {
     private Player player; // The player of the game.
     private GameObjectSpawner spawner; // Controls the spawning of GameObjects.
     private SpriteLoader loader; // Utility class that loads sprites.
+    private PlayStateKeyInput playStateKeyInput;
 
     private Random rand; // TEST. Might need for enemies...
 
     private AStarSearch aStar;
-
     private boolean startWalk = false; // For recording purposes.
-    private boolean generateNewPath; // Used to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
 
-    private PlayKeyInput playKeyInput;
+    private boolean generateNewPath; // Used to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
 
     public PlayState(Game game) {
         super(game);
@@ -69,19 +68,8 @@ public class PlayState extends GameState {
         path = aStar.findPath(player, spawner.getObject(0));
 //		BreadthFirstSearch breadthFirst = new BreadthFirstSearch(tileMap, 100);
 //		path = breadthFirst.findPath(player, spawner.getObject(0));
-        //addKeyListener(new KeyInput()); // Add custom inner class key listener for player movement.
-        addMouseMotionListener(new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent mouseEvent) {
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent mouseEvent) {
-                System.out.println(mouseEvent.getX() + " " + mouseEvent.getY());
-            }
-        });
-        playKeyInput = new PlayKeyInput(this);
-        playKeyInput.setUpKeyBindings();
+        playStateKeyInput = new PlayStateKeyInput(this);
+        playStateKeyInput.setUpKeyBindings();
     }
 
     @Override
@@ -141,32 +129,25 @@ public class PlayState extends GameState {
             spawner.render(g2d);
     }
 
+
     /**
      * Private inner class for player movement.
+     *
+     * Note:
+     * It is recommended to use Key Bindings for
+     * Swing applications rather than the KeyListener
+     * Classes. Using the KeyListener classes
+     * Requires focus, and with Swing applications,
+     * Any JComponent can have focus, making it
+     * Difficult to track which JComponent has focus.
+     * @author Jerry
      */
-    private class KeyInput extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            System.out.println("ARE WE EVEN HERE?");
-            player.keyPressed(e.getKeyCode());
-
-            // For recording purposes.
-            if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-                startWalk = true;
-                System.out.println("pressing enter...");
-            }
-        }
-        @Override
-        public void keyReleased(KeyEvent e){
-            player.keyReleased(e.getKeyCode());
-        }
-    }
-
-    private class PlayKeyInput {
+    private class PlayStateKeyInput {
 
         private InputMap inputMap;
         private ActionMap actionMap;
         private HashMap<Integer, String> movementKeyMap;
+        private HashMap<Integer, String> stopMovementKeyMap;
         private HashMap<Integer, String> optionsKeyMap;
 
         /* Possible actions in the play state.*/
@@ -176,12 +157,18 @@ public class PlayState extends GameState {
                 MOVE_LEFT = "Left",
                 MOVE_DOWN = "Down",
                 MOVE_RIGHT = "Right";
+        // Stop movement actions.
+        public static final String
+                STOP_UP = "Stop Up",
+                STOP_LEFT = "Stop Left",
+                STOP_DOWN = "Stop Down",
+                STOP_RIGHT = "Stop Right";
         // Other actions.
         public static final String
                 GOTO_MENU = "SwitchToMenu",
                 TEST = "StartWalk";
 
-        public PlayKeyInput(JPanel playState) {
+        public PlayStateKeyInput(JPanel playState) {
             inputMap = playState.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
             actionMap = playState.getActionMap();
 
@@ -190,6 +177,7 @@ public class PlayState extends GameState {
 
         private void createKeyMaps() {
             movementKeyMap = new HashMap<>();
+            stopMovementKeyMap = new HashMap<>();
             optionsKeyMap = new HashMap<>();
 
             /* Movement keys. */
@@ -203,17 +191,51 @@ public class PlayState extends GameState {
             movementKeyMap.put(KeyEvent.VK_DOWN, MOVE_DOWN);
             movementKeyMap.put(KeyEvent.VK_RIGHT, MOVE_RIGHT);
 
+            /* Stop Movement keys. */
+            stopMovementKeyMap.put(KeyEvent.VK_W, STOP_UP);
+            stopMovementKeyMap.put(KeyEvent.VK_A, STOP_LEFT);
+            stopMovementKeyMap.put(KeyEvent.VK_S, STOP_DOWN);
+            stopMovementKeyMap.put(KeyEvent.VK_D, STOP_DOWN);
+
+            stopMovementKeyMap.put(KeyEvent.VK_UP, STOP_UP);
+            stopMovementKeyMap.put(KeyEvent.VK_LEFT, STOP_LEFT);
+            stopMovementKeyMap.put(KeyEvent.VK_DOWN, STOP_DOWN);
+            stopMovementKeyMap.put(KeyEvent.VK_RIGHT, STOP_RIGHT);
+
             /* Option keys */
             optionsKeyMap.put(KeyEvent.VK_ESCAPE, GOTO_MENU);
             optionsKeyMap.put(KeyEvent.VK_ENTER, TEST);
         }
 
         public void setUpKeyBindings() {
+            /* Set up the movement key mappings. */
             for(Integer key : movementKeyMap.keySet())
             {
-
+                String action = movementKeyMap.get(key);
+                // Third argument is asking if this is a key released event.
+                inputMap.put(KeyStroke.getKeyStroke(key, 0, false), action);
+                actionMap.put(action, new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        player.keyPressed(key);
+                    }
+                });
             }
 
+            /* Set up the stop movement key mappings. */
+            for(Integer key : stopMovementKeyMap.keySet())
+            {
+                String action = stopMovementKeyMap.get(key);
+                inputMap.put(KeyStroke.getKeyStroke(key, 0, true), action);
+                actionMap.put(action, new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        player.keyReleased(key);
+                    }
+                });
+            }
+
+            /* Set up the options key mappings. */
             for(Integer key : optionsKeyMap.keySet())
             {
                 String action = optionsKeyMap.get(key);
