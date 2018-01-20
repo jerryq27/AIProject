@@ -1,8 +1,6 @@
 package com.jerry.aiproject.core;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import javax.swing.*;
 
 import com.jerry.aiproject.states.*;
@@ -139,7 +137,6 @@ public class Game extends JFrame implements Runnable {
 		    currentState = playState;
         else if(state.equals("Menu"))
             currentState = menuState;
-
         cardSwitcher.show(stateCardsPanel, state);
     }
 	
