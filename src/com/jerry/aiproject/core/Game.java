@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import com.jerry.aiproject.states.*;
+import com.jerry.aiproject.states.GameState.GameStateType;
 
 /**
  * This class contains the main method.
@@ -107,7 +108,7 @@ public class Game extends JFrame implements Runnable {
 	 */
 	public void init() {
         // Set values for the JFrame and game loop.
-        setTitle("AI Project");
+        setTitle(GameStateType.MENU.toString());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         isRunning = true; // The game has running.
 
@@ -120,8 +121,8 @@ public class Game extends JFrame implements Runnable {
         // By default, the game should start with the menu state.
         currentState = menuState;
 
-        stateCardsPanel.add(menuState, "Menu");
-		stateCardsPanel.add(playState, "Play");
+        stateCardsPanel.add(menuState, GameStateType.MENU.toString());
+		stateCardsPanel.add(playState, GameStateType.PLAY.toString());
 		stateCardsPanel.setPreferredSize(new Dimension(Game.WIDTH, Game.HEIGHT));
 
 		add(stateCardsPanel); // Add the base panel instead of a GameState Panel to fix rendering issues.
@@ -132,12 +133,13 @@ public class Game extends JFrame implements Runnable {
         setVisible(true);
 	}
 
-	public void switchStateTo(String state) {
-		if(state.equals("Play"))
+	public void switchStateTo(GameStateType state) {
+		if(state.equals(GameStateType.PLAY))
 		    currentState = playState;
-        else if(state.equals("Menu"))
+        else if(state.equals(GameStateType.MENU))
             currentState = menuState;
-        cardSwitcher.show(stateCardsPanel, state);
+        cardSwitcher.show(stateCardsPanel, state.toString());
+        setTitle(state.toString());
     }
 	
 	public void update() {
