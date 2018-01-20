@@ -23,7 +23,7 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
     private boolean hoveringPlay = false, hoveringQuit = false;
 
     public MenuState(Game game) {
-        super(game);
+        super(game, GameStateType.MENU);
         init();
     }
 
@@ -173,7 +173,7 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
         int mouseY = mouseEvent.getY();
         if(playButtonRect.contains(mouseX, mouseY))
         {
-            game.switchStateTo("Play");
+            game.switchStateTo(GameStateType.PLAY);
         }
         else if(quitButtonRect.contains(mouseX, mouseY))
         {

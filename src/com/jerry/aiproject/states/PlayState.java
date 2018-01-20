@@ -41,7 +41,7 @@ public class PlayState extends GameState {
     private boolean generateNewPath; // Used to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
 
     public PlayState(Game game) {
-        super(game);
+        super(game, GameStateType.PLAY);
         init();
     }
 
@@ -247,7 +247,7 @@ public class PlayState extends GameState {
                         switch(action)
                         {
                             case GOTO_MENU:
-                                game.switchStateTo("Menu");
+                                game.switchStateTo(GameStateType.MENU);
                                 break;
                             case TEST:
                                 startWalk = true;

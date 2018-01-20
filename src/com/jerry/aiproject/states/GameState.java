@@ -13,15 +13,30 @@ import java.awt.*;
  */
 public abstract class GameState extends JPanel {
 
+    // Used to identify the states.
+    public enum GameStateType {
+        PLAY {
+            @Override
+            public String toString() { return "AI Game"; }
+        },
+        MENU {
+            @Override
+            public String toString() { return "Menu"; }
+        }
+    }
     protected Game game; // Game object that the GameStates need for switching states.
+    protected GameStateType gameStateType;
 
-    public GameState(Game game) {
+    public GameState(Game g, GameStateType type) {
         super();
-        this.game = game;
+        game = g;
+        gameStateType = type;
+
         setPreferredSize(new Dimension(Game.WIDTH, Game.HEIGHT));
         setFocusable(true);
         setDoubleBuffered(true);
     }
+
     public abstract void init();
     public abstract void update();
     public abstract void render(Graphics2D g2d);
