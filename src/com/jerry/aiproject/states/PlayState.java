@@ -195,7 +195,7 @@ public class PlayState extends GameState {
             stopMovementKeyMap.put(KeyEvent.VK_W, STOP_UP);
             stopMovementKeyMap.put(KeyEvent.VK_A, STOP_LEFT);
             stopMovementKeyMap.put(KeyEvent.VK_S, STOP_DOWN);
-            stopMovementKeyMap.put(KeyEvent.VK_D, STOP_DOWN);
+            stopMovementKeyMap.put(KeyEvent.VK_D, STOP_RIGHT);
 
             stopMovementKeyMap.put(KeyEvent.VK_UP, STOP_UP);
             stopMovementKeyMap.put(KeyEvent.VK_LEFT, STOP_LEFT);
