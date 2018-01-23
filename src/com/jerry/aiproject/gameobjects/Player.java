@@ -16,6 +16,8 @@ import com.jerry.aiproject.aialgorithms.Node;
  */
 public class Player extends GameObject implements Movement {
 
+    private final int SPEED = 2;
+
     private int delX, delY; //Object's movement variables.
 	//Walk images without weapons. 
 	private BufferedImage[] walkDown, walkUp, walkRight, walkLeft;
@@ -61,37 +63,74 @@ public class Player extends GameObject implements Movement {
 		setY(getY() + getDelY());
 		
 		/*Implemented sticky key bug fix.*/
-		//Up/down movement.
+		// Up/down movement.
 		if(isUp)
 		{
-			setDelY(-2);
+			setDelY(-SPEED);
 			upAnim.runAnimation(); //Start the animation updates. 
 			initialImage = walkUp[0]; //Facing a new direction, set the initialImage.
 		}
 		else if(isDown)
 		{
-			setDelY(2);
+			setDelY(SPEED);
 			downAnim.runAnimation();
 			initialImage = walkDown[0];
 		}
 		else
 			setDelY(0);
-		//For right/left movement.
+
+		// For right/left movement.
 		if(isRight)
 		{
-			setDelX(2);
+			setDelX(SPEED);
 			rightAnim.runAnimation();
 			initialImage = walkRight[0];
 		}
 		else if(isLeft)
 		{
-			setDelX(-2);
+			setDelX(-SPEED);
 			leftAnim.runAnimation();
 			initialImage = walkLeft[0];
 		}
 		else
 			setDelX(0);
 	}
+
+    /**
+     * This method handles the drawings
+     *  of the player, it is called in
+     *  the main game loop.
+     */
+    @Override
+    public void render(Graphics g) {
+        //Drawing Images: image, X-Position, Y-Position, width, height, ImageObserver.
+        if(getDelY() == 0)
+            g.drawImage(initialImage, getX(), getY(), 32, 48, null);
+
+        //Fixes double-drawing Animation issues.
+        if(getDelY() > 0 && isDown && !isLeft && !isRight || isDown && isRight || isDown && isLeft)
+            downAnim.drawAnimation(g, getX(), getY(), 32, 48);
+        else if(getDelY() < 0 && isUp && !isLeft &&!isRight || isUp && isRight || isUp && isLeft)
+            upAnim.drawAnimation(g, getX(), getY(), 32, 48);
+
+        if(getDelX() > 0 && isRight && !isUp && !isDown)
+            rightAnim.drawAnimation(g, getX(), getY(), 32, 48);
+        else if(getDelX() < 0 && isLeft && !isUp && !isDown)
+            leftAnim.drawAnimation(g, getX(), getY(), 32, 48);
+
+        //DRAW HEALTH BAR
+        if(health <= 50)
+            g.setColor(Color.RED);
+        else
+            g.setColor(Color.GREEN);
+        g.fillRect(Game.WIDTH - 250, 10, health, 25);
+        g.setColor(Color.WHITE);
+        g.drawRect(Game.WIDTH - 250, 10, 200, 25);
+
+        //DEBUG TOOL
+        g.setColor(Color.RED);
+        g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+    }
 	
 	/**
 	 * This method checks for any collisions
@@ -106,42 +145,6 @@ public class Player extends GameObject implements Movement {
         // Check for top and bottom collision.
         if(getY() <= 0) { setY(0); }
         else if(getY() >= Game.HEIGHT - initialImage.getHeight()) { setY(Game.HEIGHT - initialImage.getHeight()); }
-	}
-
-	/**
-	 * This method handles the drawings
-	 *  of the player, it is called in 
-	 *  the main game loop.
-	 */
-	@Override
-	public void render(Graphics g) {
-		//Drawing Images: image, X-Position, Y-Position, width, height, ImageObserver. 
-		if(getDelY() == 0)
-			g.drawImage(initialImage, getX(), getY(), 32, 48, null);
-		
-		//Fixes double-drawing Animation issues.
-		if(getDelY() > 0 && isDown && !isLeft && !isRight || isDown && isRight || isDown && isLeft)
-			downAnim.drawAnimation(g, getX(), getY(), 32, 48);
-		else if(getDelY() < 0 && isUp && !isLeft &&!isRight || isUp && isRight || isUp && isLeft)
-			upAnim.drawAnimation(g, getX(), getY(), 32, 48);
-		
-		if(getDelX() > 0 && isRight && !isUp && !isDown)
-			rightAnim.drawAnimation(g, getX(), getY(), 32, 48);
-		else if(getDelX() < 0 && isLeft && !isUp && !isDown)
-			leftAnim.drawAnimation(g, getX(), getY(), 32, 48);
-		
-		//DRAW HEALTH BAR
-		if(health <= 50)
-			g.setColor(Color.RED);
-		else
-			g.setColor(Color.GREEN);
-		g.fillRect(Game.WIDTH - 250, 10, health, 25);
-		g.setColor(Color.WHITE);
-		g.drawRect(Game.WIDTH - 250, 10, 200, 25);
-		
-		//DEBUG TOOL
-		//g.setColor(Color.RED);
-		//g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
 	}
 
 	/**
@@ -174,15 +177,6 @@ public class Player extends GameObject implements Movement {
 				SpriteLoader.loadImage(3, 2, 32, 48),
 				SpriteLoader.loadImage(4, 2, 32, 48)
 		};
-	}
-
-	/**
-	 * This method is used to determine collisions
-	 * between the player and other GameObjects. 
-	 */
-	@Override
-	public Rectangle getBounds() {
-		return new Rectangle(getX() + 5, getY() + 5, initialImage.getWidth() - 9, initialImage.getHeight() - 5);
 	}
 	
 	/**
@@ -354,15 +348,25 @@ public class Player extends GameObject implements Movement {
 	 * @param key the KeyEvent.
 	 */
 	public void keyPressed(int key) {
-		
-		if(key == KeyEvent.VK_UP || key == KeyEvent.VK_W)
-			isUp = true;
-		if(key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S)
-			isDown = true;
-		if(key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D)
-			isRight = true;	
-		if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A)
-			isLeft = true;
+        switch(key)
+        {
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_W:
+                isUp = true;
+                break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_S:
+                isDown = true;
+                break;
+            case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_D:
+                isRight = true;
+                break;
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_A:
+                isLeft = true;
+                break;
+        }
 	}
 	
 	/**
@@ -371,14 +375,34 @@ public class Player extends GameObject implements Movement {
 	 * @param key the KeyEvent.
 	 */
 	public void keyReleased(int key) {
-		
-		if(key == KeyEvent.VK_UP || key == KeyEvent.VK_W)
-			isUp = false;
-		if(key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S)
-			isDown = false;
-		if(key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D)
-			isRight = false;
-		if(key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A)
-			isLeft = false;
+		switch(key)
+        {
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_W:
+                isUp = false;
+                break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_S:
+                isDown = false;
+                break;
+            case KeyEvent.VK_RIGHT:
+            case KeyEvent.VK_D:
+                isRight = false;
+                break;
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_A:
+                isLeft = false;
+                break;
+        }
 	}
+
+    /**
+     * This method is used to determine collisions
+     * between the player and other GameObjects.
+     */
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle(getX() + 5, getY() + 5, initialImage.getWidth() - 9, initialImage.getHeight() - 5);
+    }
+
 }
