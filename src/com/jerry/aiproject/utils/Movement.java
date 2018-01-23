@@ -15,5 +15,5 @@ public interface Movement {
     void setDelX(int delX);
     int getDelY();
     void setDelY(int delY);
-    void loadAnimation();	//All moving game objects will have animation.
+    void loadAnimationFrames();	// All moving game objects will have animation.
 }
