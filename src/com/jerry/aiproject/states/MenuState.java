@@ -12,7 +12,7 @@ import java.awt.geom.Rectangle2D;
  * menu with the game options.
  * @author Jerry
  */
-public class MenuState extends GameState implements MouseListener, MouseMotionListener {
+public class MenuState extends GameState {
 
     // Rectangles surrounding the texts.
     private FontMetrics fontMetrics;
@@ -21,6 +21,7 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
     private final int PADDING = 8; // Padding for the rectangles surrounding the boxes.
     // Values to check if the mouse is over the buttons.
     private boolean hoveringPlay = false, hoveringQuit = false;
+    private MenuStateMouseInput mouseInput; // Captures mouse events.
 
     public MenuState(Game game) {
         super(game, GameStateType.MENU);
@@ -29,8 +30,9 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
 
     @Override
     public void init() {
-        addMouseMotionListener(this);
-        addMouseListener(this);
+        mouseInput = new MenuStateMouseInput();
+        addMouseMotionListener(mouseInput);
+        addMouseListener(mouseInput);
     }
 
     @Override
@@ -138,58 +140,63 @@ public class MenuState extends GameState implements MouseListener, MouseMotionLi
         g2d.draw(quitButtonRect);
     }
 
-    @Override
-    public void mouseDragged(MouseEvent mouseEvent) {}
 
     /**
-     * This method will detect if the mouse is over
-     * the buttons and add an animation on hover.
+     * Private inner class to capture mouse events.
+     * Extended the MouseAdapter class so only
+     * The needed methods are overridden instead
+     * Of having empty method bodies that comes
+     * With the interfaces.
+     * @author Jerry
      */
-    @Override
-    public void mouseMoved(MouseEvent mouseEvent) {
-        int mouseX = mouseEvent.getX();
-        int mouseY = mouseEvent.getY();
-        if(playButtonRect.contains(mouseX, mouseY))
-        {
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            hoveringPlay = true;
+    private class MenuStateMouseInput extends MouseAdapter {
+
+        public MenuStateMouseInput() {
+            super();
         }
-        else if(quitButtonRect.contains(mouseX, mouseY))
-        {
-            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            hoveringQuit = true;
+
+        /**
+         * This method will detect if the mouse is over
+         * the buttons and add an animation on hover.
+         */
+        @Override
+        public void mouseMoved(MouseEvent mouseEvent) {
+            int mouseX = mouseEvent.getX();
+            int mouseY = mouseEvent.getY();
+            if(playButtonRect.contains(mouseX, mouseY))
+            {
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                hoveringPlay = true;
+            }
+            else if(quitButtonRect.contains(mouseX, mouseY))
+            {
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                hoveringQuit = true;
+            }
+            else
+            {
+                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                hoveringPlay = false;
+                hoveringQuit = false;
+            }
         }
-        else
-        {
-            setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            hoveringPlay = false;
-            hoveringQuit = false;
+
+        /**
+         * This method will respond if the mouse is clicked
+         * On a button.
+         */
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent) {
+            int mouseX = mouseEvent.getX();
+            int mouseY = mouseEvent.getY();
+            if(playButtonRect.contains(mouseX, mouseY))
+            {
+                game.switchStateTo(GameStateType.PLAY);
+            }
+            else if(quitButtonRect.contains(mouseX, mouseY))
+            {
+                System.exit(0);
+            }
         }
     }
-
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-        int mouseX = mouseEvent.getX();
-        int mouseY = mouseEvent.getY();
-        if(playButtonRect.contains(mouseX, mouseY))
-        {
-            game.switchStateTo(GameStateType.PLAY);
-        }
-        else if(quitButtonRect.contains(mouseX, mouseY))
-        {
-            System.exit(0);
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {}
-
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) {}
-
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) {}
-
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) {}
 }
