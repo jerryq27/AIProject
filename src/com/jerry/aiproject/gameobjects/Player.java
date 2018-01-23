@@ -16,7 +16,7 @@ import com.jerry.aiproject.aialgorithms.Node;
  */
 public class Player extends GameObject implements Movement {
 
-    int delX, delY; //Object's movement variables.
+    private int delX, delY; //Object's movement variables.
 	//Walk images without weapons. 
 	private BufferedImage[] walkDown, walkUp, walkRight, walkLeft;
 	//Animation objects for the animations.
@@ -40,7 +40,7 @@ public class Player extends GameObject implements Movement {
 	@Override
 	public void init() {
 		initialImage = SpriteLoader.loadImage(1, 1, 32, 48);
-		loadAnimation();
+		loadAnimationFrames();
 		downAnim = new Animation(walkDown, 7);
 		upAnim = new Animation(walkUp, 7);
 		rightAnim = new Animation(walkRight, 7);
@@ -99,15 +99,13 @@ public class Player extends GameObject implements Movement {
 	 * or other game objects. 
 	 */
 	public void checkCollisions() {
-		if(getX() >= Game.WIDTH - initialImage.getWidth()/2)
-			setX(Game.WIDTH - initialImage.getWidth()/2);
-		else if(getX() <= 0 - initialImage.getWidth()/6)
-			setX(0 - initialImage.getWidth()/6);
-		
-		if(getY() >= Game.HEIGHT - initialImage.getHeight())
-			setY(Game.HEIGHT - initialImage.getHeight());
-		else if(getY() <= 0 + initialImage.getHeight()/6)
-			setY(0 + initialImage.getHeight()/6);
+        // Check for left and right collision.
+        if(getX() <= 0) { setX(0); }
+        else if(getX() >= Game.WIDTH - initialImage.getWidth()) { setX(Game.WIDTH - initialImage.getWidth()); }
+
+        // Check for top and bottom collision.
+        if(getY() <= 0) { setY(0); }
+        else if(getY() >= Game.HEIGHT - initialImage.getHeight()) { setY(Game.HEIGHT - initialImage.getHeight()); }
 	}
 
 	/**
@@ -151,7 +149,7 @@ public class Player extends GameObject implements Movement {
 	 * from the sprite sheet for the player animation.
 	 */
 	@Override
-	public void loadAnimation() {
+	public void loadAnimationFrames() {
 		walkDown = new BufferedImage[]{
 				SpriteLoader.loadImage(1, 1, 32, 48),
 				SpriteLoader.loadImage(2, 1, 32, 48),
@@ -353,7 +351,7 @@ public class Player extends GameObject implements Movement {
 	/**
 	 * This method handles key input from
 	 * The Game class's key listener. 
-	 * @param e the KeyEvent.
+	 * @param key the KeyEvent.
 	 */
 	public void keyPressed(int key) {
 		
@@ -370,7 +368,7 @@ public class Player extends GameObject implements Movement {
 	/**
 	 * This method handles key input from
 	 * The Game class's key listener. 
-	 * @param e the KeyEvent.
+	 * @param key the KeyEvent.
 	 */
 	public void keyReleased(int key) {
 		
