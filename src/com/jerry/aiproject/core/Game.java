@@ -50,8 +50,8 @@ public class Game extends JFrame implements Runnable {
     private GameState currentState; // The current GameState being used.
     private JPanel stateCardsPanel; // Panel to add state panels to.
     private CardLayout cardSwitcher; // CardLayout controls the switching of panels.
-    private MenuState menuState; // The Menu JPanel.
-    private PlayState playState; // The Game JPanel.
+    private GameState menuState; // The Menu JPanel.
+    private GameState playState; // The Game JPanel.
 
 	public Game() {
         super();
@@ -95,7 +95,7 @@ public class Game extends JFrame implements Runnable {
 			if(System.currentTimeMillis() - timer > 1000) // Print every second, not in loop so we can get render counts.
 			{
 				timer += 1000; // Add second.
-				System.out.println("FPS: " + frames + " Updates: " + updates);
+                currentState.updateInfo(frames, updates);
 				frames = 0; // Reset value for next count.
 				updates = 0; // Reset value for next count.
 			}
