@@ -26,20 +26,24 @@ public abstract class GameState extends JPanel {
     }
     protected Game game; // Game object that the GameStates need for switching states.
     protected GameStateType gameStateType;
+    private int frames, updates; // Values to display stats on the window.
+    private Font infoFont; // Font to use for the FPS/Updates counter.
 
     public GameState(Game g, GameStateType type) {
         super();
         game = g;
         gameStateType = type;
+        infoFont = new Font(Font.MONOSPACED, Font.BOLD, 16);
 
         setPreferredSize(new Dimension(Game.WIDTH, Game.HEIGHT));
         setFocusable(true);
         setDoubleBuffered(true);
     }
 
-    public abstract void init();
-    public abstract void update();
-    public abstract void render(Graphics2D g2d);
+    public void updateInfo(int f, int u) {
+        frames = f;
+        updates = u;
+    }
 
     /* Recommended to override paintComponent rather then Paint */
     @Override
@@ -47,9 +51,21 @@ public abstract class GameState extends JPanel {
         super.paintComponent(g);
 
         // Using Graphics2D rather than Graphics for more 2D functionality.
-        render((Graphics2D)g);
+        // Passing a copy rather than a reference, since the graphics object
+        // Is being modified constantly, it's better that each state modifies
+        // Their own graphics object.
+        render((Graphics2D)g.create());
+
+        // Update the FPS/Updates counter.
+        g.setColor(Color.WHITE);
+        g.setFont(infoFont);
+        g.drawString("FPS: " + frames + " Updates: " + updates, 16, 24);
 
         g.dispose();
     }
+
+    public abstract void init();
+    public abstract void update();
+    public abstract void render(Graphics2D g2d);
 
 }
