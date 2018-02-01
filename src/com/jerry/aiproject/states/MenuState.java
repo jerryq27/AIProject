@@ -1,10 +1,13 @@
 package com.jerry.aiproject.states;
 
 import com.jerry.aiproject.core.Game;
+import com.sun.org.apache.bcel.internal.generic.GOTO;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
 
 /**
  * Main menu state of the game.
@@ -21,7 +24,8 @@ public class MenuState extends GameState {
     private final int PADDING = 8; // Padding for the rectangles surrounding the boxes.
     // Values to check if the mouse is over the buttons.
     private boolean hoveringPlay = false, hoveringQuit = false;
-    private MenuStateMouseInput mouseInput; // Captures mouse events.
+    private MenuStateMouseInput mouseInput; // Mouse input.
+    private MenuStateKeyInput keyInput; // Key input.
 
     public MenuState(Game game) {
         super(game, GameStateType.MENU);
@@ -33,6 +37,8 @@ public class MenuState extends GameState {
         mouseInput = new MenuStateMouseInput();
         addMouseMotionListener(mouseInput);
         addMouseListener(mouseInput);
+        keyInput = new MenuStateKeyInput(this);
+        keyInput.setUpKeyBindings();
     }
 
     @Override
@@ -196,6 +202,67 @@ public class MenuState extends GameState {
             else if(quitButtonRect.contains(mouseX, mouseY))
             {
                 System.exit(0);
+            }
+        }
+    }
+
+
+    /**
+     * Private inner class to capture key events
+     * Using key bindings.
+     * @author Jerry
+     */
+    private class MenuStateKeyInput {
+
+        private InputMap inputMap;
+        private ActionMap actionMap;
+
+        private HashMap<Integer, String> optionsKeyMap;
+
+        /* Possible actions in the menu state.*/
+        public static final String
+                GOTO_PLAY = "SwitchToPlay",
+                QUIT = "Quit";
+
+        public MenuStateKeyInput(JPanel menuState) {
+            inputMap = menuState.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+            actionMap = menuState.getActionMap();
+
+            createKeyMaps();
+        }
+
+        private void createKeyMaps() {
+            optionsKeyMap = new HashMap<>();
+
+            /* Option keys */
+            optionsKeyMap.put(KeyEvent.VK_ENTER, GOTO_PLAY);
+            optionsKeyMap.put(KeyEvent.VK_ESCAPE, QUIT);
+        }
+
+        public void setUpKeyBindings() {
+            /* Set up the options key mappings. */
+            for(Integer key : optionsKeyMap.keySet())
+            {
+                String action = optionsKeyMap.get(key);
+                inputMap.put(KeyStroke.getKeyStroke(key, 0), action);
+                actionMap.put(action, new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        String action = optionsKeyMap.get(key);
+                        switch(action)
+                        {
+                            case GOTO_PLAY:
+                                game.switchStateTo(GameStateType.PLAY);
+                                break;
+                            case QUIT:
+                                System.exit(0);
+                                break;
+                            default:
+                                System.out.println(action);
+                                break;
+                        }
+                    }
+                });
             }
         }
     }
