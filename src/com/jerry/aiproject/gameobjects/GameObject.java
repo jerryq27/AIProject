@@ -11,13 +11,13 @@ import java.awt.image.BufferedImage;
  */
 public abstract class GameObject {
 
-	//Possible object types. 
+	// Possible object types.
 	public enum GameObjectType {PLAYER, ENEMY, ITEM} 
 	
-	private int x, y; //Object's position.
-	private GameObjectType gameObjectType; //The object's type. 
+	private int x, y; // Object's position.
+	private GameObjectType gameObjectType; // The object's type.
 	
-	protected BufferedImage initialImage; //Protected for easer access in subclass, sprite image.
+	protected BufferedImage initialImage; // Protected for easer access in subclass, sprite image.
 	
 	public GameObject(int xPos, int yPos, GameObjectType objectType) {
 		x = xPos;
@@ -27,17 +27,17 @@ public abstract class GameObject {
 	
 	/* Abstract Methods */
 	
-	//Handles all initializations.
+	// Handles all initializations.
 	public abstract void init();
-	//Handles the updates. 
+	// Handles the updates.
 	public abstract void update();
-	//Handles all drawings. 
-	public abstract void render(Graphics g);
-	//For collision detection among game objects. 
+	// Handles all drawings.
+	public abstract void render(Graphics2D g2d);
+	// For collision detection among game objects.
 	public abstract Rectangle getBounds();
 	
 	
-	//Getters and setters. Some Should only be accessed by subclasses. 
+	// Getters and setters. Some Should only be accessed by subclasses.
 	public int getX() {
 		return x;
 	}

@@ -18,15 +18,15 @@ public class Player extends GameObject implements Movement {
 
     private final int SPEED = 2;
 
-    private int delX, delY; //Object's movement variables.
-	//Walk images without weapons. 
+    private int delX, delY; // Object's movement variables.
+	// Walk images without weapons.
 	private BufferedImage[] walkDown, walkUp, walkRight, walkLeft;
-	//Animation objects for the animations.
+	// Animation objects for the animations.
 	private Animation downAnim, upAnim, rightAnim, leftAnim; 
 	public int health; //Player health.
 	public int stepCount = 0; //Determines the step in the path. 
 	
-	//Booleans needed to fix the Sticky Keys problem, solution from Java-Gaming.org.
+	// Booleans needed to fix the Sticky Keys problem, solution from Java-Gaming.org.
 	private boolean isUp, isDown, isRight, isLeft;
 
 	public Player(int xPos, int yPos) {
@@ -67,8 +67,8 @@ public class Player extends GameObject implements Movement {
 		if(isUp)
 		{
 			setDelY(-SPEED);
-			upAnim.runAnimation(); //Start the animation updates. 
-			initialImage = walkUp[0]; //Facing a new direction, set the initialImage.
+			upAnim.runAnimation(); // Start the animation updates.
+			initialImage = walkUp[0]; // Facing a new direction, set the initialImage.
 		}
 		else if(isDown)
 		{
@@ -102,34 +102,34 @@ public class Player extends GameObject implements Movement {
      *  the main game loop.
      */
     @Override
-    public void render(Graphics g) {
-        //Drawing Images: image, X-Position, Y-Position, width, height, ImageObserver.
+    public void render(Graphics2D g2d) {
+        // Drawing Images: image, X-Position, Y-Position, width, height, ImageObserver.
         if(getDelY() == 0)
-            g.drawImage(initialImage, getX(), getY(), 32, 48, null);
+            g2d.drawImage(initialImage, getX(), getY(), 32, 48, null);
 
-        //Fixes double-drawing Animation issues.
+        // Fixes double-drawing Animation issues.
         if(getDelY() > 0 && isDown && !isLeft && !isRight || isDown && isRight || isDown && isLeft)
-            downAnim.drawAnimation(g, getX(), getY(), 32, 48);
+            downAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
         else if(getDelY() < 0 && isUp && !isLeft &&!isRight || isUp && isRight || isUp && isLeft)
-            upAnim.drawAnimation(g, getX(), getY(), 32, 48);
+            upAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
 
         if(getDelX() > 0 && isRight && !isUp && !isDown)
-            rightAnim.drawAnimation(g, getX(), getY(), 32, 48);
+            rightAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
         else if(getDelX() < 0 && isLeft && !isUp && !isDown)
-            leftAnim.drawAnimation(g, getX(), getY(), 32, 48);
+            leftAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
 
-        //DRAW HEALTH BAR
+        // DRAW HEALTH BAR
         if(health <= 50)
-            g.setColor(Color.RED);
+            g2d.setColor(Color.RED);
         else
-            g.setColor(Color.GREEN);
-        g.fillRect(Game.WIDTH - 250, 10, health, 25);
-        g.setColor(Color.WHITE);
-        g.drawRect(Game.WIDTH - 250, 10, 200, 25);
+            g2d.setColor(Color.GREEN);
+        g2d.fillRect(Game.WIDTH - 250, 10, health, 25);
+        g2d.setColor(Color.WHITE);
+        g2d.drawRect(Game.WIDTH - 250, 10, 200, 25);
 
         //DEBUG TOOL
-        g.setColor(Color.RED);
-        g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+        g2d.setColor(Color.RED);
+        g2d.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
     }
 	
 	/**

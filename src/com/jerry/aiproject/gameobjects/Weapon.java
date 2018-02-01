@@ -1,14 +1,13 @@
 package com.jerry.aiproject.gameobjects;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.*;
 
 import com.jerry.aiproject.utils.SpriteLoader;
 
 public class Weapon extends GameObject {
-	
-	public enum WeaponType { //Enum for the possible weapons. 
+
+	// Enum for the possible weapons.
+	public enum WeaponType {
 		AX,
 		BOW,
 		SWORD;
@@ -36,12 +35,12 @@ public class Weapon extends GameObject {
 	public void update() {}
 
 	@Override
-	public void render(Graphics g) {
-		g.drawImage(initialImage, getX(), getY(), 32, 48, null);
+	public void render(Graphics2D g2d) {
+		g2d.drawImage(initialImage, getX(), getY(), 32, 48, null);
 		
-		//DEBUG
-		//g.setColor(Color.RED);
-		//g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+		// DEBUG
+		//g2d.setColor(Color.RED);
+		//g2d.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
 	}
 
 	@Override

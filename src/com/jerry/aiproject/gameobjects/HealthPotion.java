@@ -21,12 +21,12 @@ public class HealthPotion extends GameObject {
 	public void update() {}
 
 	@Override
-	public void render(Graphics g) {
-		g.drawImage(initialImage, getX(), getY(), 32, 32, null);
+	public void render(Graphics2D g2d) {
+		g2d.drawImage(initialImage, getX(), getY(), 32, 32, null);
 		
-		//DEBUG TOOL
-		//g.setColor(Color.RED);
-		//g.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
+		// DEBUG TOOL
+		//g2d.setColor(Color.RED);
+		//g2d.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
 	}
 	
 	@Override
