@@ -1,7 +1,8 @@
 package com.jerry.aiproject.utils;
 
+import java.awt.*;
 import java.util.ArrayList;
-import java.awt.Graphics;
+
 import com.jerry.aiproject.gameobjects.*;
 
 /**
@@ -48,10 +49,10 @@ public class GameObjectSpawner {
 	 * to handle the rendering of
 	 * the GameObjects. 
 	 */
-	public void render(Graphics g) {
+	public void render(Graphics2D g2d) {
 		for(int dex = 0; dex < items.size(); dex++)
 		{
-			items.get(dex).render(g);
+			items.get(dex).render(g2d);
 		}
 	}
 	
@@ -62,8 +63,7 @@ public class GameObjectSpawner {
 		for(int dex = 0; dex < items.size(); dex++)
 		{
 			collision = objectColliding.getBounds().intersects(items.get(dex).getBounds());
-			if(collision)
-				return items.get(dex);
+			if(collision) { return items.get(dex); }
 		}
 		return null;
 	}
