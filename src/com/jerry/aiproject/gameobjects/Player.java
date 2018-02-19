@@ -14,11 +14,15 @@ import com.jerry.aiproject.aialgorithms.Node;
  * can interact with both weapons and enemies.
  * @author Jerry
  */
-public class Player extends GameObject implements Movement {
+public class Player extends GameObject implements Movement, AIMovement {
 
     private final int SPEED = 2;
 
-    private int delX, delY; // Object's movement variables.
+	// Object's movement variables.
+    private int delX, delY;
+    // Save the initial position for tile-based movement.
+    private int initialPosX, initialPosY;
+    private int targetPosX, targetPosY;
 	// Walk images without weapons.
 	private BufferedImage[] walkDown, walkUp, walkRight, walkLeft;
 	// Animation objects for the animations.
@@ -28,6 +32,8 @@ public class Player extends GameObject implements Movement {
 	
 	// Booleans needed to fix the Sticky Keys problem, solution from Java-Gaming.org.
 	private boolean isUp, isDown, isRight, isLeft;
+    // Boolean needed to implement tile-based movement.
+    private boolean isMoving = false;
 
 	public Player(int xPos, int yPos) {
 		super(xPos, yPos, GameObjectType.PLAYER);
@@ -41,8 +47,11 @@ public class Player extends GameObject implements Movement {
 	 */
 	@Override
 	public void init() {
+		initialPosX = getX();
+        initialPosY = getY();
 		initialImage = SpriteLoader.loadImage(1, 1, 32, 48);
-		loadAnimationFrames();
+
+        loadAnimationFrames();
 		downAnim = new Animation(walkDown, 7);
 		upAnim = new Animation(walkUp, 7);
 		rightAnim = new Animation(walkRight, 7);
@@ -58,42 +67,87 @@ public class Player extends GameObject implements Movement {
 	 */
 	@Override
 	public void update() {
-		checkCollisions();
-		setX(getX() + getDelX());
-		setY(getY() + getDelY());
-		
+        // Implementation of tile-based movement.
+        if(isMoving)
+        {
+            checkCollisions();
+            setX(getX() + getDelX());
+            setY(getY() + getDelY());
+
+            System.out.println("isMoving: " + isMoving +
+                    "\nisUp: " + isUp +
+                    "\ninitialY: " + initialPosY +
+                    "\nY: " + getY() +
+                    "\ntargetY: " + targetPosY + "\n");
+
+
+            // Up key is being pressed.
+            if(isUp)
+            {
+                setDelY(-SPEED);
+                upAnim.runAnimation();
+                initialImage = walkUp[0];
+                if(getY() == targetPosY)
+                {
+                    // Once the tile is reached, update position values.
+                    initialPosY = getY();
+                    // Since the key is still being held down, update the target position too.
+                    targetPosY = initialPosY - 48;
+                }
+            }
+            // Up key is released.
+            else if(isMoving)
+            {
+                // Keep moving if the target hasn't been reached.
+                if(getY() != targetPosY)
+                {
+                    setDelY(-SPEED);
+                    upAnim.runAnimation();
+                }
+                // Stop all movement once the target is reached.
+                else
+                {
+                    setDelY(0);
+                    initialPosY = getY();
+                    isMoving = false;
+                }
+            }
+        }
+
+
+
 		/*Implemented sticky key bug fix.*/
 		// Up/down movement.
-		if(isUp)
-		{
-			setDelY(-SPEED);
-			upAnim.runAnimation(); // Start the animation updates.
-			initialImage = walkUp[0]; // Facing a new direction, set the initialImage.
-		}
-		else if(isDown)
-		{
-			setDelY(SPEED);
-			downAnim.runAnimation();
-			initialImage = walkDown[0];
-		}
-		else
-			setDelY(0);
-
-		// For right/left movement.
-		if(isRight)
-		{
-			setDelX(SPEED);
-			rightAnim.runAnimation();
-			initialImage = walkRight[0];
-		}
-		else if(isLeft)
-		{
-			setDelX(-SPEED);
-			leftAnim.runAnimation();
-			initialImage = walkLeft[0];
-		}
-		else
-			setDelX(0);
+//		if(isUp)
+//		{
+//			setDelY(-SPEED);
+//			upAnim.runAnimation(); // Start the animation updates.
+//			initialImage = walkUp[0]; // Facing a new direction, set the initialImage.
+//		}
+//		else if(isDown)
+//		{
+//			setDelY(SPEED);
+//			downAnim.runAnimation();
+//			initialImage = walkDown[0];
+//		}
+//		else
+//			setDelY(0);
+//
+//		// For right/left movement.
+//		if(isRight)
+//		{
+//			setDelX(SPEED);
+//			rightAnim.runAnimation();
+//			initialImage = walkRight[0];
+//		}
+//		else if(isLeft)
+//		{
+//			setDelX(-SPEED);
+//			leftAnim.runAnimation();
+//			initialImage = walkLeft[0];
+//		}
+//		else
+//			setDelX(0);
 	}
 
     /**
@@ -104,19 +158,22 @@ public class Player extends GameObject implements Movement {
     @Override
     public void render(Graphics2D g2d) {
         // Drawing Images: image, X-Position, Y-Position, width, height, ImageObserver.
-        if(getDelY() == 0)
-            g2d.drawImage(initialImage, getX(), getY(), 32, 48, null);
-
+        if(isMoving)
+        {
+            if(isUp) { upAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
+            else if(isMoving) { upAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
+        }
+        else { g2d.drawImage(initialImage, getX(), getY(), 32, 48, null); }
         // Fixes double-drawing Animation issues.
-        if(getDelY() > 0 && isDown && !isLeft && !isRight || isDown && isRight || isDown && isLeft)
-            downAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
-        else if(getDelY() < 0 && isUp && !isLeft &&!isRight || isUp && isRight || isUp && isLeft)
-            upAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
-
-        if(getDelX() > 0 && isRight && !isUp && !isDown)
-            rightAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
-        else if(getDelX() < 0 && isLeft && !isUp && !isDown)
-            leftAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
+//        if(getDelY() > 0 && isDown && !isLeft && !isRight || isDown && isRight || isDown && isLeft)
+//            downAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
+//        else if(getDelY() < 0 && isUp && !isLeft &&!isRight || isUp && isRight || isUp && isLeft)
+//            upAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
+//
+//        if(getDelX() > 0 && isRight && !isUp && !isDown)
+//            rightAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
+//        else if(getDelX() < 0 && isLeft && !isUp && !isDown)
+//            leftAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
 
         // DRAW HEALTH BAR
         if(health <= 50)
@@ -146,6 +203,18 @@ public class Player extends GameObject implements Movement {
         if(getY() <= 0) { setY(0); }
         else if(getY() >= Game.HEIGHT - initialImage.getHeight()) { setY(Game.HEIGHT - initialImage.getHeight()); }
 	}
+
+	@Override
+	public void moveUp() { }
+
+    @Override
+    public void moveDown() { }
+
+    @Override
+    public void moveRight() { }
+
+    @Override
+    public void moveLeft() { }
 
 	/**
 	 * This method loads all the animation images
@@ -352,11 +421,22 @@ public class Player extends GameObject implements Movement {
         {
             case KeyEvent.VK_UP:
             case KeyEvent.VK_W:
-                isUp = true;
+                // This check prevents other input from being processed.
+                if(!isMoving)
+                {
+                    isMoving = true;
+                    isUp = true;
+                    targetPosY = initialPosY - 48;
+                }
                 break;
             case KeyEvent.VK_DOWN:
             case KeyEvent.VK_S:
-                isDown = true;
+                if(!isMoving)
+                {
+                    isMoving = true;
+                    isDown = true;
+                    targetPosY = initialPosY + 48;
+                }
                 break;
             case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_D:
