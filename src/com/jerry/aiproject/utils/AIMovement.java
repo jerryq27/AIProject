@@ -10,7 +10,8 @@ import com.jerry.aiproject.core.TileMap;
  * @author Jerry
  */
 public interface AIMovement {
-	
-	public void moveAlongPath(TileMap map, Path path);
+
+	// Returns whether the goal node has been reached or not.
+	boolean moveAlongPath(TileMap map, Path path);
 
 }
