@@ -81,29 +81,13 @@ public class Player extends GameObject implements Movement, AIMovement {
                     "\ntargetY: " + targetPosY + "\n");
 
 
-            // Up key is being pressed.
-            if(isUp)
-            {
-                setDelY(-SPEED);
-                upAnim.runAnimation();
-                initialImage = walkUp[0];
-                if(getY() == targetPosY)
-                {
-                    // Once the tile is reached, update position values.
-                    initialPosY = getY();
-                    // Since the key is still being held down, update the target position too.
-                    targetPosY = initialPosY - 48;
-                }
-            }
+
             // Up key is released.
-            else if(isMoving)
+            if(!isUp && !isDown && !isRight && !isLeft)
             {
                 // Keep moving if the target hasn't been reached.
-                if(getY() != targetPosY)
-                {
-                    setDelY(-SPEED);
-                    upAnim.runAnimation();
-                }
+                if(getY() > targetPosY) { moveUp(); }
+                else if(getY() < targetPosY) { moveDown(); }
                 // Stop all movement once the target is reached.
                 else
                 {
@@ -112,6 +96,9 @@ public class Player extends GameObject implements Movement, AIMovement {
                     isMoving = false;
                 }
             }
+            // Up key is being pressed.
+            else if(isUp) { moveUp(); }
+            else if(isDown) { moveDown(); }
         }
 
 
@@ -160,8 +147,8 @@ public class Player extends GameObject implements Movement, AIMovement {
         // Drawing Images: image, X-Position, Y-Position, width, height, ImageObserver.
         if(isMoving)
         {
-            if(isUp) { upAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
-            else if(isMoving) { upAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
+            if(isUp || getY() > targetPosY) { upAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
+            else if(isDown || getY() < targetPosY) { upAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
         }
         else { g2d.drawImage(initialImage, getX(), getY(), 32, 48, null); }
         // Fixes double-drawing Animation issues.
@@ -205,10 +192,32 @@ public class Player extends GameObject implements Movement, AIMovement {
 	}
 
 	@Override
-	public void moveUp() { }
+	public void moveUp() {
+        setDelY(-SPEED);
+        upAnim.runAnimation();
+        initialImage = walkUp[0];
+        if(getY() == targetPosY)
+        {
+            // Once the tile is reached, update position values.
+            initialPosY = getY();
+            // Since the key is still being held down, update the target position too.
+            targetPosY = initialPosY - 48;
+        }
+    }
 
     @Override
-    public void moveDown() { }
+    public void moveDown() {
+        setDelY(SPEED);
+        downAnim.runAnimation();
+        initialImage = walkDown[0];
+        if(getY() == targetPosY)
+        {
+            // Once the tile is reached, update position values.
+            initialPosY = getY();
+            // Since the key is still being held down, update the target position too.
+            targetPosY = initialPosY + 48;
+        }
+    }
 
     @Override
     public void moveRight() { }
