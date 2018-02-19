@@ -49,6 +49,9 @@ public class Player extends GameObject implements Movement, AIMovement {
 	public void init() {
 		initialPosX = getX();
         initialPosY = getY();
+        // Set the target values otherwise the movement is going to go towards 0.
+        targetPosX = initialPosX;
+        targetPosY = initialPosY;
 		initialImage = SpriteLoader.loadImage(1, 1, 32, 48);
 
         loadAnimationFrames();
@@ -67,74 +70,34 @@ public class Player extends GameObject implements Movement, AIMovement {
 	 */
 	@Override
 	public void update() {
-        // Implementation of tile-based movement.
+        // Tile-based movement implementation.
         if(isMoving)
         {
             checkCollisions();
             setX(getX() + getDelX());
             setY(getY() + getDelY());
 
-            System.out.println("isMoving: " + isMoving +
-                    "\nisUp: " + isUp +
-                    "\ninitialY: " + initialPosY +
-                    "\nY: " + getY() +
-                    "\ntargetY: " + targetPosY + "\n");
-
-
-
-            // Up key is released.
-            if(!isUp && !isDown && !isRight && !isLeft)
+            if(isUp) { moveUp(); }
+            else if(isDown) { moveDown(); }
+            else if(isRight) { moveRight(); }
+            else if(isLeft) { moveLeft(); }
+            else
             {
                 // Keep moving if the target hasn't been reached.
                 if(getY() > targetPosY) { moveUp(); }
                 else if(getY() < targetPosY) { moveDown(); }
-                // Stop all movement once the target is reached.
-                else
+                else if(getX() < targetPosX) { moveRight(); }
+                else if(getX() > targetPosX) { moveLeft(); }
+                else // Stop all movement once the target is reached.
                 {
+                    setDelX(0);
                     setDelY(0);
+                    initialPosX = getX();
                     initialPosY = getY();
                     isMoving = false;
                 }
             }
-            // Up key is being pressed.
-            else if(isUp) { moveUp(); }
-            else if(isDown) { moveDown(); }
         }
-
-
-
-		/*Implemented sticky key bug fix.*/
-		// Up/down movement.
-//		if(isUp)
-//		{
-//			setDelY(-SPEED);
-//			upAnim.runAnimation(); // Start the animation updates.
-//			initialImage = walkUp[0]; // Facing a new direction, set the initialImage.
-//		}
-//		else if(isDown)
-//		{
-//			setDelY(SPEED);
-//			downAnim.runAnimation();
-//			initialImage = walkDown[0];
-//		}
-//		else
-//			setDelY(0);
-//
-//		// For right/left movement.
-//		if(isRight)
-//		{
-//			setDelX(SPEED);
-//			rightAnim.runAnimation();
-//			initialImage = walkRight[0];
-//		}
-//		else if(isLeft)
-//		{
-//			setDelX(-SPEED);
-//			leftAnim.runAnimation();
-//			initialImage = walkLeft[0];
-//		}
-//		else
-//			setDelX(0);
 	}
 
     /**
@@ -148,19 +111,11 @@ public class Player extends GameObject implements Movement, AIMovement {
         if(isMoving)
         {
             if(isUp || getY() > targetPosY) { upAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
-            else if(isDown || getY() < targetPosY) { upAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
+            else if(isDown || getY() < targetPosY) { downAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
+            else if(isRight || getX() < targetPosX) { rightAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
+            else if(isLeft || getX() > targetPosX) { leftAnim.drawAnimation(g2d, getX(), getY(), 32, 38); }
         }
         else { g2d.drawImage(initialImage, getX(), getY(), 32, 48, null); }
-        // Fixes double-drawing Animation issues.
-//        if(getDelY() > 0 && isDown && !isLeft && !isRight || isDown && isRight || isDown && isLeft)
-//            downAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
-//        else if(getDelY() < 0 && isUp && !isLeft &&!isRight || isUp && isRight || isUp && isLeft)
-//            upAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
-//
-//        if(getDelX() > 0 && isRight && !isUp && !isDown)
-//            rightAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
-//        else if(getDelX() < 0 && isLeft && !isUp && !isDown)
-//            leftAnim.drawAnimation(g2d, getX(), getY(), 32, 48);
 
         // DRAW HEALTH BAR
         if(health <= 50)
@@ -212,18 +167,34 @@ public class Player extends GameObject implements Movement, AIMovement {
         initialImage = walkDown[0];
         if(getY() == targetPosY)
         {
-            // Once the tile is reached, update position values.
             initialPosY = getY();
-            // Since the key is still being held down, update the target position too.
             targetPosY = initialPosY + 48;
         }
     }
 
     @Override
-    public void moveRight() { }
+    public void moveRight() {
+        setDelX(SPEED);
+        rightAnim.runAnimation();
+        initialImage = walkRight[0];
+        if(getX() == targetPosX)
+        {
+            initialPosX = getX();
+            targetPosX = initialPosX + 32;
+        }
+    }
 
     @Override
-    public void moveLeft() { }
+    public void moveLeft() {
+        setDelX(-SPEED);
+        leftAnim.runAnimation();
+        initialImage = walkLeft[0];
+        if(getX() == targetPosX)
+        {
+            initialPosX = getX();
+            targetPosX = initialPosX - 32;
+        }
+    }
 
 	/**
 	 * This method loads all the animation images
@@ -449,11 +420,21 @@ public class Player extends GameObject implements Movement, AIMovement {
                 break;
             case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_D:
-                isRight = true;
+                if(!isMoving)
+                {
+                    isMoving = true;
+                    isRight = true;
+                    targetPosX = initialPosX + 32;
+                }
                 break;
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_A:
-                isLeft = true;
+                if(!isMoving)
+                {
+                    isMoving = true;
+                    isLeft = true;
+                    targetPosX = initialPosX - 32;
+                }
                 break;
         }
 	}
