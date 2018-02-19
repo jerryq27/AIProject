@@ -10,7 +10,10 @@ import com.jerry.aiproject.core.TileMap;
  * @author Jerry
  */
 public interface Movement {
-    boolean moveAlongPath(TileMap map, Path path);
+    void moveUp();
+    void moveDown();
+    void moveRight();
+    void moveLeft();
     int getDelX();
     void setDelX(int delX);
     int getDelY();
