@@ -5,6 +5,14 @@ import java.awt.*;
 import com.jerry.aiproject.data.Sprite;
 import com.jerry.aiproject.utils.SpriteLoader;
 
+/**
+ * This class represents a weapon game object.
+ * There are three types of weapons used in the game:
+ *      - A sword for basic enemies
+ *      - A bow for unreachable enemies
+ *      - An ax for large enemies
+ * @author Jerry
+ */
 public class Weapon extends GameObject {
 
 	// Enum for the possible weapons.
@@ -13,23 +21,29 @@ public class Weapon extends GameObject {
 		BOW,
 		SWORD;
 	}
-	private WeaponType weapon;
+	private WeaponType weaponType;
 	
 	
 	public Weapon(int x, int y, WeaponType type) {
 		super(x, y, GameObjectType.ITEM);
-		weapon = type;
+		weaponType = type;
 		init();
 	}
 
 	@Override
 	public void init() {
-		if(weapon == WeaponType.AX)
-			initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 1));
-		else if(weapon == WeaponType.BOW)
-			initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 2));
-		else if(weapon == WeaponType.SWORD)
-			initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 3));
+		switch(weaponType)
+        {
+            case AX:
+                initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 1));
+                break;
+            case BOW:
+                initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 2));
+                break;
+            case SWORD:
+                initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 3));
+                break;
+        }
 	}
 
 	@Override
