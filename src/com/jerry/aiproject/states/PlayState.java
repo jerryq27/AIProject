@@ -50,7 +50,7 @@ public class PlayState extends GameState {
         loader = new SpriteLoader("res/loveless_ritsuka.png"); // Load the sprite sheet.
 
         // Create and fill the map, and create the lava river.
-        tileMap = new TileMap(Game.WIDTH, Game.HEIGHT, Game.WIDTH/20, Game.HEIGHT/15);
+        tileMap = new TileMap(Game.WIDTH, Game.HEIGHT);
         tileMap.fillMap(TileMap.TileType.GRASS, true);
         tileMap.fillCol(TileMap.TileType.LAVA, 2, false);
 

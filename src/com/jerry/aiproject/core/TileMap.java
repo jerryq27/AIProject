@@ -20,16 +20,13 @@ public class TileMap {
 	private BufferedImage grass, lava; //Tile images.
 	
 	private int mapWidth, mapHeight; //The number of rows/columns in tiles. 
-	private int tileWidth, tileHeight; //The height and width of each tile in pixels. 
-	private boolean[][] tileState; //The 'state' of each tile, blocked or not. 
+	private boolean[][] tileState; //The 'state' of each tile, blocked or not.
 	private TileType[][] tiles; //Map tile types.
 	private boolean[][] visited; //Debug tool, notes if the path finding algorithm has visited a tile. 
 	
-	public TileMap(int mWidth, int mHeight, int tWidth, int tHeight) {
+	public TileMap(int mWidth, int mHeight) {
 		mapWidth = mWidth;
 		mapHeight = mHeight;
-		tileWidth = tWidth;
-		tileHeight = tHeight;
 
         int rows = getRows();
         int cols = getCols();
@@ -104,7 +101,7 @@ public class TileMap {
 	 * @return the number of rows on the map.
 	 */
 	public int getRows() {
-		return mapHeight/tileHeight;
+		return mapHeight/Sprite.HEIGHT;
 	}
 	
 	/**
@@ -113,7 +110,7 @@ public class TileMap {
 	 * @return the number of columns on the map. 
 	 */
 	public int getCols() {
-		return mapWidth/tileWidth;
+		return mapWidth/Sprite.WIDTH;
 	}
 	
 	/**
@@ -124,7 +121,7 @@ public class TileMap {
 	 * @return the row number. 
 	 */
 	public int getRow(int pixels) {
-		return pixels/tileHeight;
+		return pixels/Sprite.HEIGHT;
 	}
 	
 	/**
@@ -135,7 +132,7 @@ public class TileMap {
 	 * @return the column number. 
 	 */
 	public int getCol(int pixels) {
-		return pixels/tileWidth;
+		return pixels/Sprite.WIDTH;
 	}
 	
 	/**
@@ -146,7 +143,7 @@ public class TileMap {
 	 * @return the tile row location in pixels. 
 	 */
 	public int getYCoord(int tileRow) {
-		return tileRow * tileHeight;
+		return tileRow * Sprite.HEIGHT;
 	}
 	
 	/**
@@ -157,7 +154,7 @@ public class TileMap {
 	 * @return the tile's column location in pixels. 
 	 */
 	public int getXCoord(int tileCol) {
-		return tileCol * tileWidth;
+		return tileCol * Sprite.WIDTH;
 	}
 	
 	/**
@@ -237,15 +234,15 @@ public class TileMap {
 			{
 				if(tiles[row][col] == TileType.GRASS)
 				{
-					g.drawImage(grass, col * tileWidth, row * tileHeight, tileWidth, tileHeight, null);
+					g.drawImage(grass, col * Sprite.WIDTH, row * Sprite.HEIGHT, Sprite.WIDTH, Sprite.HEIGHT, null);
                     g.setColor(Color.RED);
-                    g.drawRect(col * tileWidth, row * tileHeight, tileWidth, tileHeight);
+                    g.drawRect(col * Sprite.WIDTH, row * Sprite.HEIGHT, Sprite.WIDTH, Sprite.HEIGHT);
 				}
 				else if(tiles[row][col] == TileType.LAVA)
 				{
-					g.drawImage(lava, col * tileWidth, row * tileHeight, tileWidth, tileHeight, null);
+					g.drawImage(lava, col * Sprite.WIDTH, row * Sprite.HEIGHT, Sprite.WIDTH, Sprite.HEIGHT, null);
                     g.setColor(Color.RED);
-                    g.drawRect(col * tileWidth, row * tileHeight, tileWidth, tileHeight);
+                    g.drawRect(col * Sprite.WIDTH, row * Sprite.HEIGHT, Sprite.WIDTH, Sprite.HEIGHT);
 				}
 			}
 		}
