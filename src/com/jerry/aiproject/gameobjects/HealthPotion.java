@@ -1,6 +1,8 @@
 package com.jerry.aiproject.gameobjects;
 
 import java.awt.*;
+
+import com.jerry.aiproject.data.Sprite;
 import com.jerry.aiproject.utils.SpriteLoader;
 
 /**
@@ -17,7 +19,7 @@ public class HealthPotion extends GameObject {
 
 	@Override
 	public void init() {
-		initialImage = SpriteLoader.loadImage("res/health_potion.png", 1, 1, 32, 48);
+		initialImage = SpriteLoader.loadSprite("res/health_potion.png", new Sprite(1, 1));
 	}
 	@Override
 	public void update() {}

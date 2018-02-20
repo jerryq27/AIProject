@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import com.jerry.aiproject.core.*;
+import com.jerry.aiproject.data.Sprite;
 import com.jerry.aiproject.utils.*;
 import com.jerry.aiproject.aialgorithms.Node;
 
@@ -52,7 +53,7 @@ public class Player extends GameObject implements Movement, AIMovement {
         // Set the target values otherwise the movement is going to go towards 0.
         targetPosX = initialPosX;
         targetPosY = initialPosY;
-		initialImage = SpriteLoader.loadImage(1, 1, 32, 48);
+		initialImage = SpriteLoader.loadSprite(new Sprite(1, 1));
 
         loadAnimationFrames();
 		downAnim = new Animation(walkDown, 7);
@@ -203,30 +204,30 @@ public class Player extends GameObject implements Movement, AIMovement {
 	@Override
 	public void loadAnimationFrames() {
 		walkDown = new BufferedImage[]{
-				SpriteLoader.loadImage(1, 1, 32, 48),
-				SpriteLoader.loadImage(2, 1, 32, 48),
-				SpriteLoader.loadImage(3, 1, 32, 48),
-				SpriteLoader.loadImage(4, 1, 32, 48)
-		};
-		walkUp = new BufferedImage[] {
-				SpriteLoader.loadImage(1, 4, 32, 48),
-				SpriteLoader.loadImage(2, 4, 32, 48),
-				SpriteLoader.loadImage(3, 4, 32, 48),
-				SpriteLoader.loadImage(4, 4, 32, 48)
+				SpriteLoader.loadSprite(new Sprite(1, 1)),
+				SpriteLoader.loadSprite(new Sprite(1, 2)),
+				SpriteLoader.loadSprite(new Sprite(1, 3)),
+				SpriteLoader.loadSprite(new Sprite(1, 4))
 		};
 		walkRight = new BufferedImage[] {
-				SpriteLoader.loadImage(1, 3, 32, 48),
-				SpriteLoader.loadImage(2, 3, 32, 48),
-				SpriteLoader.loadImage(3, 3, 32, 48),
-				SpriteLoader.loadImage(4, 3, 32, 48)
+				SpriteLoader.loadSprite(new Sprite(3, 1)),
+				SpriteLoader.loadSprite(new Sprite(3, 2)),
+				SpriteLoader.loadSprite(new Sprite(3, 3)),
+				SpriteLoader.loadSprite(new Sprite(3, 4))
 		};
-		walkLeft = new BufferedImage[] {
-				SpriteLoader.loadImage(1, 2, 32, 48),
-				SpriteLoader.loadImage(2, 2, 32, 48),
-				SpriteLoader.loadImage(3, 2, 32, 48),
-				SpriteLoader.loadImage(4, 2, 32, 48)
+        walkLeft = new BufferedImage[] {
+				SpriteLoader.loadSprite(new Sprite(2, 1)),
+				SpriteLoader.loadSprite(new Sprite(2, 2)),
+				SpriteLoader.loadSprite(new Sprite(2, 3)),
+				SpriteLoader.loadSprite(new Sprite(2, 4))
 		};
-	}
+        walkUp = new BufferedImage[] {
+                SpriteLoader.loadSprite(new Sprite(4, 1)),
+                SpriteLoader.loadSprite(new Sprite(4, 2)),
+                SpriteLoader.loadSprite(new Sprite(4, 3)),
+                SpriteLoader.loadSprite(new Sprite(4, 4))
+        };
+    }
 	
 	/**
 	 * This method is required by the 

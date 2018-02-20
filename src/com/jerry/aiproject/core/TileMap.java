@@ -3,6 +3,7 @@ package com.jerry.aiproject.core;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import com.jerry.aiproject.data.Sprite;
 import com.jerry.aiproject.utils.SpriteLoader;
 import com.jerry.aiproject.gameobjects.*;
 
@@ -221,8 +222,8 @@ public class TileMap {
 	 * This method loads the tile images.
 	 */
 	private void loadTiles() {
-		lava = SpriteLoader.loadImage("res/testTiles.png", 1, 1, 32, 48);
-		grass = SpriteLoader.loadImage("res/testTiles.png", 2, 1, 32, 48);
+		lava = SpriteLoader.loadSprite("res/testTiles.png", new Sprite(1, 1));
+		grass = SpriteLoader.loadSprite("res/testTiles.png", new Sprite(1, 2));
 	}
 	
 	/**

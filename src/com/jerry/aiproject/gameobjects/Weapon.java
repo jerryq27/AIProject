@@ -2,6 +2,7 @@ package com.jerry.aiproject.gameobjects;
 
 import java.awt.*;
 
+import com.jerry.aiproject.data.Sprite;
 import com.jerry.aiproject.utils.SpriteLoader;
 
 public class Weapon extends GameObject {
@@ -24,11 +25,11 @@ public class Weapon extends GameObject {
 	@Override
 	public void init() {
 		if(weapon == WeaponType.AX)
-			initialImage = SpriteLoader.loadImage("res/weapons.png", 1, 1, 32, 48);
+			initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 1));
 		else if(weapon == WeaponType.BOW)
-			initialImage = SpriteLoader.loadImage("res/weapons.png", 2, 1, 32, 48);
+			initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 2));
 		else if(weapon == WeaponType.SWORD)
-			initialImage = SpriteLoader.loadImage("res/weapons.png", 3, 1, 32, 48);
+			initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 3));
 	}
 
 	@Override
