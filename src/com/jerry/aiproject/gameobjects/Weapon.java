@@ -37,7 +37,7 @@ public class Weapon extends GameObject {
 
 	@Override
 	public void render(Graphics2D g2d) {
-		g2d.drawImage(initialImage, getX(), getY(), 32, 48, null);
+		g2d.drawImage(initialImage, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT, null);
 		
 		// DEBUG
 		//g2d.setColor(Color.RED);
@@ -46,6 +46,6 @@ public class Weapon extends GameObject {
 
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(getX() + 4, getY() + 5, initialImage.getWidth() - 8, initialImage.getHeight());
+		return new Rectangle(getX() + 4, getY() + 5, Sprite.WIDTH - 8, Sprite.HEIGHT);
 	}
 }

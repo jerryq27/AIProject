@@ -111,12 +111,16 @@ public class Player extends GameObject implements Movement, AIMovement {
         // Drawing Images: image, X-Position, Y-Position, width, height, ImageObserver.
         if(isMoving)
         {
-            if(isUp || getY() > targetPosY) { upAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
-            else if(isDown || getY() < targetPosY) { downAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
-            else if(isRight || getX() < targetPosX) { rightAnim.drawAnimation(g2d, getX(), getY(), 32, 48); }
-            else if(isLeft || getX() > targetPosX) { leftAnim.drawAnimation(g2d, getX(), getY(), 32, 38); }
+            if(isUp || getY() > targetPosY)
+            { upAnim.drawAnimation(g2d, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT); }
+            else if(isDown || getY() < targetPosY)
+            { downAnim.drawAnimation(g2d, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT); }
+            else if(isRight || getX() < targetPosX)
+            { rightAnim.drawAnimation(g2d, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT); }
+            else if(isLeft || getX() > targetPosX)
+            { leftAnim.drawAnimation(g2d, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT); }
         }
-        else { g2d.drawImage(initialImage, getX(), getY(), 32, 48, null); }
+        else { g2d.drawImage(initialImage, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT, null); }
 
         // DRAW HEALTH BAR
         if(health <= 50)
@@ -407,7 +411,7 @@ public class Player extends GameObject implements Movement, AIMovement {
                 {
                     isMoving = true;
                     isUp = true;
-                    targetPosY = initialPosY - 48;
+                    targetPosY = initialPosY - Sprite.HEIGHT;
                 }
                 break;
             case KeyEvent.VK_DOWN:
@@ -416,7 +420,7 @@ public class Player extends GameObject implements Movement, AIMovement {
                 {
                     isMoving = true;
                     isDown = true;
-                    targetPosY = initialPosY + 48;
+                    targetPosY = initialPosY + Sprite.HEIGHT;
                 }
                 break;
             case KeyEvent.VK_RIGHT:
@@ -425,7 +429,7 @@ public class Player extends GameObject implements Movement, AIMovement {
                 {
                     isMoving = true;
                     isRight = true;
-                    targetPosX = initialPosX + 32;
+                    targetPosX = initialPosX + Sprite.WIDTH;
                 }
                 break;
             case KeyEvent.VK_LEFT:
@@ -434,7 +438,7 @@ public class Player extends GameObject implements Movement, AIMovement {
                 {
                     isMoving = true;
                     isLeft = true;
-                    targetPosX = initialPosX - 32;
+                    targetPosX = initialPosX - Sprite.WIDTH;
                 }
                 break;
         }
@@ -473,7 +477,7 @@ public class Player extends GameObject implements Movement, AIMovement {
      */
     @Override
     public Rectangle getBounds() {
-        return new Rectangle(getX() + 5, getY() + 5, initialImage.getWidth() - 9, initialImage.getHeight() - 5);
+        return new Rectangle(getX() + 5, getY() + 5, Sprite.WIDTH - 9, Sprite.HEIGHT - 5);
     }
 
 }

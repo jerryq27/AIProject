@@ -26,7 +26,7 @@ public class HealthPotion extends GameObject {
 
 	@Override
 	public void render(Graphics2D g2d) {
-		g2d.drawImage(initialImage, getX(), getY(), 32, 48, null);
+		g2d.drawImage(initialImage, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT, null);
 		
 		// DEBUG TOOL
 		//g2d.setColor(Color.RED);
@@ -35,6 +35,6 @@ public class HealthPotion extends GameObject {
 	
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(getX(), getY(), initialImage.getWidth(), initialImage.getHeight());
+		return new Rectangle(getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT);
 	}
 }
