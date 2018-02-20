@@ -12,17 +12,19 @@ public class HealthPotion extends GameObject {
 	
 	public HealthPotion(int xPos, int yPos) {
 		super(xPos, yPos, GameObjectType.ITEM);
-		initialImage = SpriteLoader.loadImage("res/smallhp.png", 1, 1, 48, 48);
+		init();
 	}
 
 	@Override
-	public void init() {}
+	public void init() {
+		initialImage = SpriteLoader.loadImage("res/health_potion.png", 1, 1, 32, 48);
+	}
 	@Override
 	public void update() {}
 
 	@Override
 	public void render(Graphics2D g2d) {
-		g2d.drawImage(initialImage, getX(), getY(), 32, 32, null);
+		g2d.drawImage(initialImage, getX(), getY(), 32, 48, null);
 		
 		// DEBUG TOOL
 		//g2d.setColor(Color.RED);
@@ -31,6 +33,6 @@ public class HealthPotion extends GameObject {
 	
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(getX() + 5, getY(), initialImage.getWidth() - 27, initialImage.getHeight() - 17);
+		return new Rectangle(getX(), getY(), initialImage.getWidth(), initialImage.getHeight());
 	}
 }
