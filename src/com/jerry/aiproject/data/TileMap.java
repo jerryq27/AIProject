@@ -1,9 +1,8 @@
-package com.jerry.aiproject.core;
+package com.jerry.aiproject.data;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import com.jerry.aiproject.data.Sprite;
 import com.jerry.aiproject.utils.SpriteLoader;
 import com.jerry.aiproject.gameobjects.*;
 

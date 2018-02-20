@@ -1,11 +1,10 @@
-package com.jerry.aiproject.aialgorithms;
+package com.jerry.aiproject.ai;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.jerry.aiproject.core.TileMap;
+import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
-import com.jerry.aiproject.utils.Path;
 
 /**
  * This class will implement the 

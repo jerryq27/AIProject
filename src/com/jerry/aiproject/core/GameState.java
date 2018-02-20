@@ -1,6 +1,4 @@
-package com.jerry.aiproject.states;
-
-import com.jerry.aiproject.core.Game;
+package com.jerry.aiproject.core;
 
 import javax.swing.*;
 import java.awt.*;

@@ -3,8 +3,7 @@ package com.jerry.aiproject.core;
 import java.awt.*;
 import javax.swing.*;
 
-import com.jerry.aiproject.states.*;
-import com.jerry.aiproject.states.GameState.GameStateType;
+import com.jerry.aiproject.core.GameState.GameStateType;
 
 /**
  * This class contains the main method.

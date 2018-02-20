@@ -1,8 +1,6 @@
-package com.jerry.aiproject.utils;
+package com.jerry.aiproject.ai;
 
 import java.util.ArrayList;
-
-import com.jerry.aiproject.aialgorithms.Node;
 
 /**
  * This class is going to contain

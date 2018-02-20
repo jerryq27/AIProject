@@ -1,14 +1,13 @@
-package com.jerry.aiproject.states;
+package com.jerry.aiproject.core;
 
-import com.jerry.aiproject.aialgorithms.AStarSearch;
-import com.jerry.aiproject.core.Game;
-import com.jerry.aiproject.core.TileMap;
+import com.jerry.aiproject.ai.AStarSearch;
+import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
 import com.jerry.aiproject.gameobjects.HealthPotion;
 import com.jerry.aiproject.gameobjects.Player;
 import com.jerry.aiproject.gameobjects.Weapon;
 import com.jerry.aiproject.utils.GameObjectSpawner;
-import com.jerry.aiproject.utils.Path;
+import com.jerry.aiproject.ai.Path;
 import com.jerry.aiproject.utils.SpriteLoader;
 
 import javax.swing.*;

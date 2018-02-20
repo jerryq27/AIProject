@@ -4,10 +4,13 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import com.jerry.aiproject.ai.AIMovement;
+import com.jerry.aiproject.ai.Path;
 import com.jerry.aiproject.core.*;
 import com.jerry.aiproject.data.Sprite;
+import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.utils.*;
-import com.jerry.aiproject.aialgorithms.Node;
+import com.jerry.aiproject.ai.Node;
 
 /**
  * This class defines the GameObject Player.

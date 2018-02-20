@@ -1,4 +1,4 @@
-package com.jerry.aiproject.aialgorithms;
+package com.jerry.aiproject.ai;
 
 /**
  * This class is to keep track of each tile's

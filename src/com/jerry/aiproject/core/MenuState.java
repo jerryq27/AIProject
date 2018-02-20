@@ -1,7 +1,4 @@
-package com.jerry.aiproject.states;
-
-import com.jerry.aiproject.core.Game;
-import com.sun.org.apache.bcel.internal.generic.GOTO;
+package com.jerry.aiproject.core;
 
 import javax.swing.*;
 import java.awt.*;

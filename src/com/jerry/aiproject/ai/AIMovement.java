@@ -1,6 +1,6 @@
-package com.jerry.aiproject.utils;
+package com.jerry.aiproject.ai;
 
-import com.jerry.aiproject.core.TileMap;
+import com.jerry.aiproject.data.TileMap;
 
 /**
  * This interface is for GameObjects that
