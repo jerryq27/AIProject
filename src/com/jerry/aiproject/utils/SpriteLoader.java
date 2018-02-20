@@ -1,5 +1,7 @@
 package com.jerry.aiproject.utils;
 
+import com.jerry.aiproject.data.Sprite;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +17,7 @@ import javax.imageio.ImageIO;
 public class SpriteLoader {
 
 	//Static, easier access from all classes once it has been initialized in the Game class.
-	private static BufferedImage spriteSheet, sprite;
+	private static BufferedImage spriteSheet, spriteImage;
 	
 	public SpriteLoader(String fileName) {
 		try {
@@ -29,29 +31,34 @@ public class SpriteLoader {
 	/**
 	 * Utility method, purpose of class, which is why the method is static.
 	 * The method belongs to the class and is the same for every instance
-	 * after it has been created. 
-	 * @param col starts count at 1. 
-	 * @param row starts count at 1. 
-	 * @param width the width of the sub image in the sheet. 
-	 * @param height the height of the sub image in the sheet. 
+	 * after it has been created.
+     *
+     * Uses rows and columns in the loaded sprite sheet to get the right
+     * Sub images. Since the game is constantly using 32x48 px sprites,
+     * This method can consistently grab the appropriate images.
+	 * @param sprite contains the information of the sprite to load.
 	 * @return the sub image specified. 
 	 */
-	public static BufferedImage loadImage(int col, int row, int width, int height) {
-		sprite = spriteSheet.getSubimage((col * width) - width, (row * height) - height, 
-			width, height);
+	public static BufferedImage loadSprite(Sprite sprite) {
+		spriteImage = spriteSheet.getSubimage(
+				(sprite.getCol() * Sprite.WIDTH) - Sprite.WIDTH,
+				(sprite.getRow() * Sprite.HEIGHT) - Sprite.HEIGHT,
+				Sprite.WIDTH, Sprite.HEIGHT);
 		
-		return sprite;
+		return spriteImage;
 	}
 	
 	//METHOD FOR TESTING.
-	public static BufferedImage loadImage(String path, int col, int row, int width, int height) {
+	public static BufferedImage loadSprite(String path, Sprite sprite) {
 		BufferedImage extraImage = null;
 		try {
 			extraImage = ImageIO.read(new File(path));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return extraImage.getSubimage((col * width) - width, (row * height) - height, 
-				width, height);
+		return extraImage.getSubimage(
+				(sprite.getCol() * Sprite.WIDTH) - Sprite.WIDTH,
+				(sprite.getRow() * Sprite.HEIGHT) - Sprite.HEIGHT,
+				Sprite.WIDTH, Sprite.HEIGHT);
 	}
 }
