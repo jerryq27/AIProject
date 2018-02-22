@@ -30,8 +30,8 @@ public class AStarSearch {
 	/**
 	 * Constructor for an A* Search. 
 	 * @param map the TileMap. 
-	 * @param mapTiles booleans of all the tile states. 
-	 * @param depth how far to search before giving up. 
+	 * @param depth how far to search before giving up.
+	 * @param allowDiagonal whether or not to allow diagonal tiles to be searched.
 	 */
 	public AStarSearch(TileMap map, int depth, boolean allowDiagonal) {
 		tileMap = map;
