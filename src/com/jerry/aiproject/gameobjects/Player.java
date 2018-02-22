@@ -114,13 +114,13 @@ public class Player extends GameObject implements Movement, AIMovement {
         // Drawing Images: image, X-Position, Y-Position, width, height, ImageObserver.
         if(isMoving)
         {
-            if(isUp || getY() > targetPosY)
+            if(isUp || initialPosY > targetPosY)
             { upAnim.drawAnimation(g2d, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT); }
-            else if(isDown || getY() < targetPosY)
+            else if(isDown || initialPosY < targetPosY)
             { downAnim.drawAnimation(g2d, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT); }
-            else if(isRight || getX() < targetPosX)
+            else if(isRight || initialPosX < targetPosX)
             { rightAnim.drawAnimation(g2d, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT); }
-            else if(isLeft || getX() > targetPosX)
+            else if(isLeft || initialPosX > targetPosX)
             { leftAnim.drawAnimation(g2d, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT); }
         }
         else { g2d.drawImage(initialImage, getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT, null); }
