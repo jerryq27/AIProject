@@ -33,8 +33,16 @@ public class GameObjectSpawner {
 	public void removeObject(GameObject object) {
 		items.remove(object);
 	}
-	
-	/**
+
+    public ArrayList<GameObject> getEnemies() {
+        return enemies;
+    }
+
+    public ArrayList<GameObject> getItems() {
+        return items;
+    }
+
+    /**
 	 * To handle the updating of
 	 * the Game Objects. 
 	 */

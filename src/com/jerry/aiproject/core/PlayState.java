@@ -3,6 +3,7 @@ package com.jerry.aiproject.core;
 import com.jerry.aiproject.ai.AStarSearch;
 import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
+import com.jerry.aiproject.gameobjects.GameObject.GameObjectType;
 import com.jerry.aiproject.gameobjects.HealthPotion;
 import com.jerry.aiproject.gameobjects.Player;
 import com.jerry.aiproject.gameobjects.Weapon;
@@ -13,6 +14,7 @@ import com.jerry.aiproject.utils.SpriteLoader;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -106,17 +108,24 @@ public class PlayState extends GameState {
 
 
 //		// TEST: Works!!
-//		if(spawner != null && player.getBounds().intersects(spawner.getObject(0).getBounds()))
-//		{
-//			if(player.health != 200)
-//				player.health += 150;
-//			spawner.removeObject(spawner.getObject(0));
-//			spawner = null;
-//
-//			//Display a message and exit the game.
-//			JOptionPane.showMessageDialog(this, "Player got the potion!");
-//			System.exit(0);
-//		}
+        for (int i = 0; i < spawner.getItems().size(); i++)
+        {
+            GameObject currentObject = spawner.getObject(i);
+
+            if(player.getBounds().intersects(currentObject.getBounds()))
+            {
+                if(currentObject instanceof HealthPotion)
+                {
+                    player.health += 150;
+                    System.out.println("Got the potion.");
+                }
+                else if(currentObject instanceof Weapon)
+                {
+                    System.out.println("Got a weapon.");
+                }
+                spawner.removeObject(spawner.getObject(i));
+            }
+        }
     }
 
     @Override
