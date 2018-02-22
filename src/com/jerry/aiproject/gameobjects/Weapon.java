@@ -60,6 +60,6 @@ public class Weapon extends GameObject {
 
 	@Override
 	public Rectangle getBounds() {
-		return new Rectangle(getX() + 4, getY() + 5, Sprite.WIDTH - 8, Sprite.HEIGHT);
+		return new Rectangle(getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT);
 	}
 }

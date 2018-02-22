@@ -133,10 +133,6 @@ public class Player extends GameObject implements Movement, AIMovement {
         g2d.fillRect(Game.WIDTH - 250, 10, health, 25);
         g2d.setColor(Color.WHITE);
         g2d.drawRect(Game.WIDTH - 250, 10, 200, 25);
-
-        //DEBUG TOOL
-        g2d.setColor(Color.RED);
-        g2d.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
     }
 	
 	/**
@@ -476,7 +472,7 @@ public class Player extends GameObject implements Movement, AIMovement {
      */
     @Override
     public Rectangle getBounds() {
-        return new Rectangle(getX() + 5, getY() + 5, Sprite.WIDTH - 9, Sprite.HEIGHT - 5);
+        return new Rectangle(getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT);
     }
 
 }
