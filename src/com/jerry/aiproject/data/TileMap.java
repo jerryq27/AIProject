@@ -115,45 +115,49 @@ public class TileMap {
 	/**
 	 * This method returns the specified row
 	 * in the map by the pixels passed in, it 
-	 * only works in increments of the tileHeight. 
+	 * only works in increments of the tileHeight.
+	 * Adding a 1 to avoid 0 in path finding.
 	 * @param pixels the pixel position of the row.
 	 * @return the row number. 
 	 */
 	public int getRow(int pixels) {
-		return pixels/Sprite.HEIGHT;
+		return (pixels/Sprite.HEIGHT) + 1;
 	}
 	
 	/**
 	 * This method returns the specified column
 	 * in the map by the pixels passed in, it 
 	 * only works in increments of the tileWidth.
+     * Adding a 1 to avoid 0 in path finding.
 	 * @param pixels the pixel position of the column.
 	 * @return the column number. 
 	 */
 	public int getCol(int pixels) {
-		return pixels/Sprite.WIDTH;
-	}
-	
-	/**
-	 * These methods will help place game objects
-	 * on the map, it will also make using the 
-	 * AI algorithms easier. 
-	 * @param tileRow the tile's row coordinate.
-	 * @return the tile row location in pixels. 
-	 */
-	public int getYCoord(int tileRow) {
-		return tileRow * Sprite.HEIGHT;
+		return (pixels/Sprite.WIDTH) + 1;
 	}
 	
 	/**
 	 * These methods will help place game objects
 	 * on the map, it will also make using the 
 	 * AI algorithms easier.
+     * Subtracting 1 for a more accurate row count.
+	 * @param tileRow the tile's row coordinate.
+	 * @return the tile row location in pixels. 
+	 */
+	public int getYCoord(int tileRow) {
+		return (tileRow - 1) * Sprite.HEIGHT;
+	}
+	
+	/**
+	 * These methods will help place game objects
+	 * on the map, it will also make using the 
+	 * AI algorithms easier.
+     * Subtracting 1 for a more accurate column count.
 	 * @param tileCol the tile's column coordinate. 
 	 * @return the tile's column location in pixels. 
 	 */
 	public int getXCoord(int tileCol) {
-		return tileCol * Sprite.WIDTH;
+		return (tileCol - 1) * Sprite.WIDTH;
 	}
 	
 	/**
