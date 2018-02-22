@@ -19,7 +19,7 @@ public class HealthPotion extends GameObject {
 
 	@Override
 	public void init() {
-		initialImage = SpriteLoader.loadSprite("res/health_potion.png", new Sprite(1, 1));
+		initialImage = SpriteLoader.loadSprite("res/items.png", new Sprite(2, 1));
 	}
 	@Override
 	public void update() {}

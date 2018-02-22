@@ -35,13 +35,13 @@ public class Weapon extends GameObject {
 		switch(weaponType)
         {
             case AX:
-                initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 1));
+                initialImage = SpriteLoader.loadSprite("res/items.png", new Sprite(1, 2));
                 break;
             case BOW:
-                initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 2));
+                initialImage = SpriteLoader.loadSprite("res/items.png", new Sprite(1, 3));
                 break;
             case SWORD:
-                initialImage = SpriteLoader.loadSprite("res/weapons.png", new Sprite(1, 3));
+                initialImage = SpriteLoader.loadSprite("res/items.png", new Sprite(2, 2));
                 break;
         }
 	}

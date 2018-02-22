@@ -102,7 +102,7 @@ public class Player extends GameObject implements Movement, AIMovement {
                 }
             }
         }
-	}
+    }
 
     /**
      * This method handles the drawings
@@ -164,7 +164,7 @@ public class Player extends GameObject implements Movement, AIMovement {
             // Once the tile is reached, update position values.
             initialPosY = getY();
             // Since the key is still being held down, update the target position too.
-            targetPosY = initialPosY - 48;
+            targetPosY = initialPosY - Sprite.HEIGHT <= 0? 0 : initialPosY - Sprite.HEIGHT;
         }
     }
 
@@ -176,7 +176,7 @@ public class Player extends GameObject implements Movement, AIMovement {
         if(getY() == targetPosY)
         {
             initialPosY = getY();
-            targetPosY = initialPosY + 48;
+            targetPosY = initialPosY + Sprite.HEIGHT >= Game.HEIGHT? initialPosY : initialPosY + Sprite.HEIGHT;
         }
     }
 
@@ -188,7 +188,7 @@ public class Player extends GameObject implements Movement, AIMovement {
         if(getX() == targetPosX)
         {
             initialPosX = getX();
-            targetPosX = initialPosX + 32;
+            targetPosX = initialPosX + Sprite.WIDTH >= Game.WIDTH? initialPosX: initialPosX + Sprite.WIDTH;
         }
     }
 
@@ -200,7 +200,7 @@ public class Player extends GameObject implements Movement, AIMovement {
         if(getX() == targetPosX)
         {
             initialPosX = getX();
-            targetPosX = initialPosX - 32;
+            targetPosX = initialPosX - Sprite.WIDTH <= 0? 0 : initialPosX - Sprite.WIDTH;
         }
     }
 
@@ -414,7 +414,6 @@ public class Player extends GameObject implements Movement, AIMovement {
                 {
                     isMoving = true;
                     isUp = true;
-                    targetPosY = initialPosY - Sprite.HEIGHT;
                 }
                 break;
             case KeyEvent.VK_DOWN:
@@ -423,7 +422,6 @@ public class Player extends GameObject implements Movement, AIMovement {
                 {
                     isMoving = true;
                     isDown = true;
-                    targetPosY = initialPosY + Sprite.HEIGHT;
                 }
                 break;
             case KeyEvent.VK_RIGHT:
@@ -432,7 +430,6 @@ public class Player extends GameObject implements Movement, AIMovement {
                 {
                     isMoving = true;
                     isRight = true;
-                    targetPosX = initialPosX + Sprite.WIDTH;
                 }
                 break;
             case KeyEvent.VK_LEFT:
@@ -441,7 +438,6 @@ public class Player extends GameObject implements Movement, AIMovement {
                 {
                     isMoving = true;
                     isLeft = true;
-                    targetPosX = initialPosX - Sprite.WIDTH;
                 }
                 break;
         }
