@@ -121,7 +121,7 @@ public class TileMap {
 	 * @return the row number. 
 	 */
 	public int getRow(int pixels) {
-		return (pixels/Sprite.HEIGHT) + 1;
+		return pixels/Sprite.HEIGHT;
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class TileMap {
 	 * @return the column number. 
 	 */
 	public int getCol(int pixels) {
-		return (pixels/Sprite.WIDTH) + 1;
+		return pixels/Sprite.WIDTH;
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public class TileMap {
 	 * @return the tile row location in pixels. 
 	 */
 	public int getYCoord(int tileRow) {
-		return (tileRow - 1) * Sprite.HEIGHT;
+		return tileRow * Sprite.HEIGHT;
 	}
 	
 	/**
@@ -157,7 +157,7 @@ public class TileMap {
 	 * @return the tile's column location in pixels. 
 	 */
 	public int getXCoord(int tileCol) {
-		return (tileCol - 1) * Sprite.WIDTH;
+		return tileCol * Sprite.WIDTH;
 	}
 	
 	/**
@@ -183,14 +183,12 @@ public class TileMap {
 	 * @param col the tile's column. 
 	 * @return if the tile is still within the map.
 	 */
-	public boolean isWithinMap(GameObject object, int sRow, int sCol, int row, int col) {
+	public boolean isWithinMap(int row, int col) {
 		boolean withinMap = true;
 		
-		if(row < 0 || col < 0 || row > getRows() || col > getCols())
+		if(row < 0 || col < 0 || row >= getRows() || col >= getCols())
 			withinMap = false;
-		if(withinMap && row != sRow || col != sCol)
-			withinMap = isBlocked(object, row, col);
-		
+
 		return withinMap;
 	}
 	
