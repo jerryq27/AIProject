@@ -1,38 +1,30 @@
 package com.jerry.aiproject.ai;
 
-import java.util.ArrayList;
-
 import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * This class will implement the Breadth
- * First search algorithm, it uses a queue
- * which is "first in, first out" type of 
- * list. It is similar to A*, but the open 
- * list isn't sorted by a heuristic, and
- * every parent is checked before checking
- * the children nodes. Implementation was
- * broken down in pseudo code by David 
- * Brackeen author of Developing Games in
- * Java and Alexander Useche, owner of
- * http://www.alexanderuseche.com/
+ * This class uses the Breadth First Search
+ * Algorithm to find a path between two
+ * Game Objects. This algorithm works by
+ * Searching each node and their neighbors
+ * Until the object is found.
  * @author Jerry
  */
 public class BreadthFirstSearch {
 
-	private ArrayList<Node> openList = new ArrayList<Node>();
-	private ArrayList<Node> closedList = new ArrayList<Node>();
-	private Node[][] nodes;
+    private List<Node> visitedList = new ArrayList<>();
+    private List<Node> notVisitedList = new ArrayList<>();
 	private TileMap tileMap;
-	private int maxDepth;
-	//private boolean diagonalMoves = false;
-	
-	public BreadthFirstSearch(TileMap map, int depth) {
+	private Node[][] nodes;
+
+	public BreadthFirstSearch(TileMap map) {
 		tileMap = map;
-		maxDepth = depth;
-		
-		//Create nodes for every tile on the map. 
+
+		// Create the grid map.
 		nodes = new Node[tileMap.getRows()][tileMap.getCols()];
 		for(int row = 0; row < tileMap.getRows(); row++)
 		{
@@ -42,85 +34,104 @@ public class BreadthFirstSearch {
 			}
 		}
 	}
-	
-	public Path findPath(GameObject objectSearching, GameObject objectToFind) {
-		openList.clear();
-		closedList.clear();
 
-        //Get the coordinates of each object.
-        int startR = tileMap.getRow(objectSearching.getY()),
-            startC = tileMap.getCol(objectSearching.getX());
-        int goalR = tileMap.getRow(objectToFind.getY()),
-            goalC = tileMap.getCol(objectToFind.getX());
+    /**
+     * This method implements the actual BFS algorithm
+     * To find a path between two game objects.
+     * @param fromObject The object that's searching.
+     * @param toObject The object to find.
+     * @return a path between the two points.
+     */
+	public Path findPath(GameObject fromObject, GameObject toObject) {
+		Path path = new Path();
 
-		nodes[startR][startC].depth = 0;
-		nodes[startR][startC].cost = 0;
-		
-		//Add the first node to the open list. 
-		openList.add(nodes[startR][startC]);
-		//The first node doesn't have a parent, so null. 
-		nodes[startR][startC].parent = null;
-		
-		int treeDepth = 0;
-		while(treeDepth < maxDepth && !openList.isEmpty())
+		// Figure out the start and end point's coordinates.
+		int startRow = tileMap.getRow(fromObject.getY()),
+				startCol = tileMap.getCol(fromObject.getX());
+		int endRow = tileMap.getRow(toObject.getY()),
+				endCol = tileMap.getCol(toObject.getX());
+
+		// Set the start and end nodes.
+		Node startingNode = nodes[startRow][startCol];
+		startingNode.setParent(null);
+		Node endingNode = nodes[endRow][endCol];
+
+		// First area to check is the starting point.
+		notVisitedList.add(startingNode);
+		while(!notVisitedList.isEmpty())
 		{
-			Node currentNode = openList.get(0);
-			if(currentNode == nodes[goalR][goalC])
-				break;
+			// FIFO behavior.
+			Node currentNode = notVisitedList.get(0);
+			// If we find the object, break the loop.
+			if(currentNode.compareTo(endingNode) == 0) { break; }
 
-			//First in, first out, Queue style removal in Breadth First Search.
-			openList.remove(0);
-			closedList.add(currentNode); //The node has been explored, add to the closed list. 
-			//Begin searching through the neighbors of the current node.
-			for(int dex = 0; dex < 4; dex++)
+			// Grab the nodes surrounding the current node.
+			ArrayList<Node> neighbors = getNeighbors(currentNode);
+			for(Node neighbor : neighbors)
 			{
-				/*
-				 * Go through each neighbor of the node, add unexplored nodes to the open list. 
-				 * Skip the nodes already explored in the closed list. Also make sure that the
-				 * node is within the map. 
-				 */
-				try{
-					if(dex == 0 && !closedList.contains(nodes[currentNode.row + 1][currentNode.col]))
-					{
-						nodes[currentNode.row + 1][currentNode.col].parent = currentNode;
-						openList.add(nodes[currentNode.row + 1][currentNode.col]);
-						closedList.add(nodes[currentNode.row + 1][currentNode.col]);
-					}
-					else if(dex == 1 && !closedList.contains(nodes[currentNode.row - 1][currentNode.col]))
-					{
-						nodes[currentNode.row - 1][currentNode.col].parent = currentNode;
-						openList.add(nodes[currentNode.row - 1][currentNode.col]);
-						closedList.add(nodes[currentNode.row - 1][currentNode.col]);
-					}
-					else if(dex == 2 && !closedList.contains(nodes[currentNode.row][currentNode.col + 1]))
-					{
-						nodes[currentNode.row][currentNode.col + 1].parent = currentNode;
-						openList.add(nodes[currentNode.row][currentNode.col + 1]); 
-						closedList.add(nodes[currentNode.row][currentNode.col + 1]); 
-					}
-					else if(dex == 3 && !closedList.contains(nodes[currentNode.row][currentNode.col - 1]))
-					{
-						nodes[currentNode.row][currentNode.col - 1].parent = currentNode;
-						openList.add(nodes[currentNode.row][currentNode.col - 1]);
-						closedList.add(nodes[currentNode.row][currentNode.col - 1]);
-					}
-				}catch(ArrayIndexOutOfBoundsException e){
-					continue;
+				// Check if we have not visited the neighbors.
+				if(!visitedList.contains(neighbor))
+				{
+					// Set the parent and add the node to the not visited list.
+					neighbor.setParent(currentNode);
+					notVisitedList.add(neighbor);
 				}
 			}
+			// Update lists now that the current node has been visited.
+			visitedList.add(currentNode);
+			notVisitedList.remove(currentNode);
 		}
-		
-		//Create the path. 
-		Path path = new Path();
-		Node goalNode = nodes[goalR][goalC];
-		while(goalNode != nodes[startR][startC])
-		{	
-			path.newStartStep(goalNode);
-			goalNode = goalNode.parent;
+
+		// Create the path.
+		Node currentNode = endingNode;
+		while(currentNode.compareTo(startingNode) != 0)
+		{
+			path.newStartStep(currentNode);
+			currentNode = currentNode.getParent();
 		}
-		
-		path.newStartStep(goalNode);
-		path.printPath();
+		// path.newStartStep(startingNode);
+
+		cleanUp();
 		return path;
 	}
+
+	/**
+	 * This method is used to grap the neighbors
+	 * that are surrounding the current node.
+	 * @param node the current node.
+	 * @return the neighbors of the current node.
+	 */
+	public ArrayList<Node> getNeighbors(Node node) {
+		ArrayList<Node> neighbors = new ArrayList<>();
+
+		Node north, east, south, west;
+		try { north = nodes[node.getRow() - 1][node.getCol()]; }
+		catch(ArrayIndexOutOfBoundsException e) { north = null; }
+		try { east = nodes[node.getRow()][node.getCol() + 1]; }
+		catch(ArrayIndexOutOfBoundsException e) { east = null; }
+		try { south = nodes[node.getRow() + 1][node.getCol()]; }
+		catch(ArrayIndexOutOfBoundsException e) { south = null; }
+		try { west = nodes[node.getRow()][node.getCol() - 1]; }
+		catch(ArrayIndexOutOfBoundsException e) { west = null; }
+
+		// Check North.
+		if(north != null) { neighbors.add(north); }
+		// East.
+		if(east != null) { neighbors.add(east); }
+		// South.
+		if(south != null) { neighbors.add(south); }
+		// West.
+		if(west != null) { neighbors.add(west); }
+
+		return neighbors;
+	}
+
+    /**
+     * Housekeeping.
+     */
+	public void cleanUp() {
+        nodes = null;
+        visitedList.clear();
+        notVisitedList.clear();
+    }
 }
