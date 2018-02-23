@@ -1,9 +1,9 @@
 package com.jerry.aiproject.core;
 
 import com.jerry.aiproject.ai.AStarSearch;
+import com.jerry.aiproject.ai.BreadthFirstSearch;
 import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
-import com.jerry.aiproject.gameobjects.GameObject.GameObjectType;
 import com.jerry.aiproject.gameobjects.HealthPotion;
 import com.jerry.aiproject.gameobjects.Player;
 import com.jerry.aiproject.gameobjects.Weapon;
@@ -14,7 +14,6 @@ import com.jerry.aiproject.utils.SpriteLoader;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -65,10 +64,6 @@ public class PlayState extends GameState {
         spawner.spawn(new Weapon(tileMap.getXCoord(10), tileMap.getYCoord(3), Weapon.WeaponType.SWORD));
         spawner.spawn(new Weapon(tileMap.getXCoord(13), tileMap.getYCoord(3), Weapon.WeaponType.BOW));
 
-        aStar = new AStarSearch(tileMap, 100, true);
-        path = aStar.findPath(player, spawner.getObject(0));
-//		BreadthFirstSearch breadthFirst = new BreadthFirstSearch(tileMap, 100);
-//		path = breadthFirst.findPath(player, spawner.getObject(0));
         playStateKeyInput = new PlayStateKeyInput(this);
         playStateKeyInput.setUpKeyBindings();
     }
@@ -79,31 +74,46 @@ public class PlayState extends GameState {
 
         if(startWalk) // For recording purposes.
         {
-            generateNewPath = player.moveAlongPath(tileMap, path);
-            System.out.println(generateNewPath);
+            // Generate a path using one of the algorithms.
+            //aStar = new AStarSearch(tileMap, 100, true);
+            //path = aStar.findPath(player, spawner.getObject(0));
+            if(path == null)
+            {
+                System.out.println("Starting search..");
+                BreadthFirstSearch breadthFirst = new BreadthFirstSearch(tileMap);
+                long startTime = System.currentTimeMillis();
+                path = breadthFirst.findPath(player, spawner.getObject(0));
+                long endTime = System.currentTimeMillis();
+                double time = endTime - startTime;
+                System.out.println("Path generation took: " + time/1000.0 + " seconds.\n");
+                path.printPath();
+            }
+            // generateNewPath = player.moveAlongPath(tileMap, path);
+            // System.out.println(generateNewPath);
+
             // Check if the player is colliding with any object.
-            GameObject collidingObject = spawner.checkCollision(player);
-            if(collidingObject != null)
-            {
-                if(collidingObject instanceof Weapon)
-                {
-                    System.err.println("Got a weapon!");
-                    spawner.removeObject(collidingObject);
-                }
-                else if(collidingObject instanceof HealthPotion)
-                {
-                    System.err.println("Got a potion!");
-                    spawner.removeObject(collidingObject);
-                    if(player.health != 200)
-                        player.health += 150;
-                }
-            }
-            if(generateNewPath)
-            {
-                startWalk = false;
-                path = aStar.findPath(player, spawner.getObject(0));
-                generateNewPath = false;
-            }
+//            GameObject collidingObject = spawner.checkCollision(player);
+//            if(collidingObject != null)
+//            {
+//                if(collidingObject instanceof Weapon)
+//                {
+//                    System.err.println("Got a weapon!");
+//                    spawner.removeObject(collidingObject);
+//                }
+//                else if(collidingObject instanceof HealthPotion)
+//                {
+//                    System.err.println("Got a potion!");
+//                    spawner.removeObject(collidingObject);
+//                    if(player.health != 200)
+//                        player.health += 150;
+//                }
+//            }
+//            if(generateNewPath)
+//            {
+//                startWalk = false;
+//                // path = aStar.findPath(player, spawner.getObject(0));
+//                generateNewPath = false;
+//            }
         }
 
 
