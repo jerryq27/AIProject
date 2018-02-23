@@ -79,7 +79,7 @@ public class BreadthFirstSearch {
 			}
 			// Update lists now that the current node has been visited.
 			visitedList.add(currentNode);
-			notVisitedList.remove(currentNode);
+			notVisitedList.removeAll(visitedList);
 		}
 
 		// Create the path.
