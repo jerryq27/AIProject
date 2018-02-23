@@ -70,7 +70,7 @@ public class BreadthFirstSearch {
 			for(Node neighbor : neighbors)
 			{
 				// Check if we have not visited the neighbors.
-				if(!visitedList.contains(neighbor))
+				if(!visitedList.contains(neighbor) && !notVisitedList.contains(neighbor))
 				{
 					// Set the parent and add the node to the not visited list.
 					neighbor.setParent(currentNode);
@@ -79,7 +79,7 @@ public class BreadthFirstSearch {
 			}
 			// Update lists now that the current node has been visited.
 			visitedList.add(currentNode);
-			notVisitedList.removeAll(visitedList);
+			notVisitedList.remove(currentNode);
 		}
 
 		// Create the path.
