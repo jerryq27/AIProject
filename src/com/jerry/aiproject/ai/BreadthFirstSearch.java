@@ -86,10 +86,10 @@ public class BreadthFirstSearch {
 		Node currentNode = endingNode;
 		while(currentNode.compareTo(startingNode) != 0)
 		{
-			path.newStartStep(currentNode);
+			path.prependNode(currentNode);
 			currentNode = currentNode.getParent();
 		}
-		// path.newStartStep(startingNode);
+		// path.prependNode(startingNode);
 
 		cleanUp();
 		return path;
