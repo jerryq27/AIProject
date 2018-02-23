@@ -1,65 +1,70 @@
 package com.jerry.aiproject.ai;
 
 /**
- * This class is to keep track of each tile's
- * information, it is also only to make the 
- * algorithm easier to implement with pseudocode.
- * Each node represents a tile. Implements 
- * Comparable to sort the list for the algorithms
- * that need a sorted open list. 
+ * This class will mainly be used for the
+ * AI algorithms. It will represent a node
+ * of the tile map grid structure.
  * @author Jerry
  */
-public class Node implements Comparable<Object> {
+public class Node implements Comparable<Node> {
 
-	protected int row, col; //Location of the node. 
-	protected float cost; //The path cost for this node.
-	protected Node parent; //The parent of the current node.
-	protected float heuristic; //The heuristic cost for this node.
-	protected int depth; //How far the node is in the tree. 
+    // The cost to move to a node.
+    public static final int STEP_COST = 1;
+    private int row, col;
+    // The parent node, needed to construct the path.
+    private Node parentNode;
 
-	public Node(int r, int c) {
-		row = r;
-		col = c;
-	}
+    public Node(int r, int c) {
+        row = r;
+        col = c;
+    }
 
-	/**
-	 * This method sets the parent of the
-	 * current node and returns the current 
-	 * depth of the tree. 
-	 * @param parentNode the parent node. 
-	 * @return the depth of the tree. 
-	 */
-	public int setParent(Node parentNode) {
-		depth = parentNode.depth + 1;
-		parent = parentNode;
+    public int getRow() {
+        return row;
+    }
 
-		return depth;
-	}
+    public int getCol() {
+        return col;
+    }
 
-	/**
-	 * Mostly for the A* Search algorithm, to 
-	 * sort the nodes in the open list based 
-	 * on the heuristic cost of the node. 
-	 */
-	@Override
-	public int compareTo(Object n) {
-		Node passedNode = (Node)n;
+    public void setParent(Node parent) {
+        parentNode = parent;
+    }
 
-		float thisCost = heuristic + cost;
-		float passedCost = passedNode.heuristic + passedNode.cost;
+    public Node getParent() {
+        return parentNode;
+    }
 
-		if(thisCost > passedCost)
-			return 1;
-		else if(thisCost < passedCost)
-			return -1;
-		else
-			return 0;
-	}
-	
-	public int getRow() {
-		return row;
-	}
-	public int getCol() {
-		return col;
-	}
+    /**
+     * Heuristic calculation for the
+     * A* search algorithm. It determines
+     * The cost of a node based on its
+     * Distance to the goal node.
+     * @param goalNode the end node.
+     * @return the cost of the node to the distance.
+     */
+    public int calculateHeuristic(Node goalNode) {
+        int rowCost = goalNode.getRow() - this.getRow();
+        int colCost = goalNode.getCol() - this.getRow();
+
+        return rowCost + colCost;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "row=" + row +
+                ", col=" + col +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Node node) {
+        if(this.getRow() == node.getRow())
+        {
+            if(this.getCol() == node.getCol()) { return 0; }
+            return this.getRow() < node.getRow()? -1 : 1;
+        }
+        return this.getCol() < node.getCol()? -1 : 1;
+    }
 }
