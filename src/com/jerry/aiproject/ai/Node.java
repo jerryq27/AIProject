@@ -13,6 +13,11 @@ public class Node implements Comparable<Node> {
     private int row, col;
     // The parent node, needed to construct the path.
     private Node parentNode;
+    // Cost needs to be determined for the A Start algorithm.
+    private int distanceFromStart;
+    private int heuristic;
+    // Cost with heuristic value.
+    private int cost;
 
     public Node(int r, int c) {
         row = r;
@@ -35,6 +40,18 @@ public class Node implements Comparable<Node> {
         return parentNode;
     }
 
+    public int getDistanceFromStart() {
+        return distanceFromStart;
+    }
+
+    public void setDistanceFromStart(int cost) {
+        distanceFromStart = cost;
+    }
+
+    public int getHeuristic() {
+        return heuristic;
+    }
+
     /**
      * Heuristic calculation for the
      * A* search algorithm. It determines
@@ -43,11 +60,19 @@ public class Node implements Comparable<Node> {
      * @param goalNode the end node.
      * @return the cost of the node to the distance.
      */
-    public int calculateHeuristic(Node goalNode) {
-        int rowCost = goalNode.getRow() - this.getRow();
-        int colCost = goalNode.getCol() - this.getRow();
+    public void setHeuristic(Node goalNode) {
+        int rowCost = Math.abs(goalNode.getRow() - this.getRow());
+        int colCost = Math.abs(goalNode.getCol() - this.getRow());
 
-        return rowCost + colCost;
+        heuristic = rowCost + colCost;
+    }
+
+    public void calculateCost() {
+        cost = distanceFromStart + heuristic;
+    }
+
+    public int getCost() {
+        return cost;
     }
 
     @Override
