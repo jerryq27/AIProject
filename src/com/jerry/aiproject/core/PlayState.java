@@ -1,7 +1,6 @@
 package com.jerry.aiproject.core;
 
 import com.jerry.aiproject.ai.AStarSearch;
-import com.jerry.aiproject.ai.BreadthFirstSearch;
 import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
 import com.jerry.aiproject.gameobjects.HealthPotion;
@@ -80,9 +79,10 @@ public class PlayState extends GameState {
             if(path == null)
             {
                 System.out.println("Starting search..");
-                BreadthFirstSearch breadthFirst = new BreadthFirstSearch(tileMap);
+                //BreadthFirstSearch pathFinder = new BreadthFirstSearch(tileMap);
+                AStarSearch pathFinder = new AStarSearch(tileMap);
                 long startTime = System.currentTimeMillis();
-                path = breadthFirst.findPath(player, spawner.getObject(0));
+                path = pathFinder.findPath(player, spawner.getObject(0));
                 long endTime = System.currentTimeMillis();
                 double time = endTime - startTime;
                 System.out.println("Path generation took: " + time/1000.0 + " seconds.\n");
