@@ -1,6 +1,8 @@
 package com.jerry.aiproject.core;
 
 import com.jerry.aiproject.ai.AStarSearch;
+import com.jerry.aiproject.ai.BreadthFirstSearch;
+import com.jerry.aiproject.ai.PathFinder;
 import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
 import com.jerry.aiproject.gameobjects.HealthPotion;
@@ -34,7 +36,7 @@ public class PlayState extends GameState {
 
     private Random rand; // TEST. Might need for enemies...
 
-    private AStarSearch aStar;
+    private PathFinder pathFinder; // To locate paths between objects.
     private boolean startWalk = false; // For recording purposes.
 
     private boolean generateNewPath; // Used to determine when to generate a new path. (Other idea, generate when and object has been removed from game.)
@@ -79,13 +81,15 @@ public class PlayState extends GameState {
             if(path == null)
             {
                 System.out.println("Starting search..");
-                //BreadthFirstSearch pathFinder = new BreadthFirstSearch(tileMap);
-                AStarSearch pathFinder = new AStarSearch(tileMap);
+                //pathFinder = new BreadthFirstSearch(tileMap);
+                pathFinder = new AStarSearch(tileMap);
+
                 long startTime = System.currentTimeMillis();
                 path = pathFinder.findPath(player, spawner.getObject(0));
                 long endTime = System.currentTimeMillis();
-                double time = endTime - startTime;
-                System.out.println("Path generation took: " + time/1000.0 + " seconds.\n");
+
+                System.out.println("Path generation took: " + (double)(endTime - startTime)/1000.0 + " seconds.\n");
+
                 path.printPath();
             }
             // generateNewPath = player.moveAlongPath(tileMap, path);
