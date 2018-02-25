@@ -21,25 +21,10 @@ import com.jerry.aiproject.gameobjects.GameObject;
  * cost of the Nodes.
  * @author Jerry
  */
-public class AStarSearch {
-
-	private List<Node> visitedList = new ArrayList<>();
-	private List<Node> notVisitedList = new ArrayList<>();
-	private TileMap tileMap;
-	private Node[][] nodes;
+public class AStarSearch extends PathFinder {
 
 	public AStarSearch(TileMap map) {
-		tileMap = map;
-
-		// Create the grid map.
-		nodes = new Node[tileMap.getRows()][tileMap.getCols()];
-		for(int row = 0; row < tileMap.getRows(); row++)
-		{
-			for(int col = 0; col < tileMap.getCols(); col++)
-			{
-				nodes[row][col] = new Node(row, col);
-			}
-		}
+		super(map);
 	}
 
 	/**
@@ -76,11 +61,11 @@ public class AStarSearch {
 		startingNode.calculateCost();
 
 		// First area to check is the starting point.
-		notVisitedList.add(startingNode);
-		while(!notVisitedList.isEmpty())
+		notVisited.add(startingNode);
+		while(!notVisited.isEmpty())
 		{
 			// FIFO behavior.
-			Node currentNode = notVisitedList.get(0);
+			Node currentNode = notVisited.get(0);
 			// If we find the object, break the loop.
 			if(currentNode.compareTo(endingNode) == 0) { break; }
 
@@ -95,13 +80,13 @@ public class AStarSearch {
 
 				lowestCostNode = neighbor.getCost() < lowestCostNode.getCost()? neighbor : lowestCostNode;
 			}
-			if(!notVisitedList.contains(lowestCostNode) && !visitedList.contains(currentNode))
+			if(!notVisited.contains(lowestCostNode) && !visited.contains(currentNode))
 			{
 				lowestCostNode.setParent(currentNode);
-				notVisitedList.add(lowestCostNode);
+				notVisited.add(lowestCostNode);
 
-				notVisitedList.remove(currentNode);
-				visitedList.add(currentNode);
+				notVisited.remove(currentNode);
+				visited.add(currentNode);
 			}
 		}
 
@@ -116,45 +101,5 @@ public class AStarSearch {
 
 		cleanUp();
 		return path;
-	}
-
-	/**
-	 * This method is used to grab the neighbors
-	 * that are surrounding the current node.
-	 * @param node the current node.
-	 * @return the neighbors of the current node.
-	 */
-	public ArrayList<Node> getNeighbors(Node node) {
-		ArrayList<Node> neighbors = new ArrayList<>();
-
-		Node north, east, south, west;
-		try { north = nodes[node.getRow() - 1][node.getCol()]; }
-		catch(ArrayIndexOutOfBoundsException e) { north = null; }
-		try { east = nodes[node.getRow()][node.getCol() + 1]; }
-		catch(ArrayIndexOutOfBoundsException e) { east = null; }
-		try { south = nodes[node.getRow() + 1][node.getCol()]; }
-		catch(ArrayIndexOutOfBoundsException e) { south = null; }
-		try { west = nodes[node.getRow()][node.getCol() - 1]; }
-		catch(ArrayIndexOutOfBoundsException e) { west = null; }
-
-		// Check North.
-		if(north != null) { neighbors.add(north); }
-		// East.
-		if(east != null) { neighbors.add(east); }
-		// South.
-		if(south != null) { neighbors.add(south); }
-		// West.
-		if(west != null) { neighbors.add(west); }
-
-		return neighbors;
-	}
-
-	/**
-	 * Housekeeping.
-	 */
-	public void cleanUp() {
-		nodes = null;
-		visitedList.clear();
-		notVisitedList.clear();
 	}
 }

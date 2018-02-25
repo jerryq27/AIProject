@@ -4,7 +4,6 @@ import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class uses the Breadth First Search
@@ -14,25 +13,10 @@ import java.util.List;
  * Until the object is found.
  * @author Jerry
  */
-public class BreadthFirstSearch {
-
-    private List<Node> visitedList = new ArrayList<>();
-    private List<Node> notVisitedList = new ArrayList<>();
-	private TileMap tileMap;
-	private Node[][] nodes;
+public class BreadthFirstSearch extends PathFinder {
 
 	public BreadthFirstSearch(TileMap map) {
-		tileMap = map;
-
-		// Create the grid map.
-		nodes = new Node[tileMap.getRows()][tileMap.getCols()];
-		for(int row = 0; row < tileMap.getRows(); row++)
-		{
-			for(int col = 0; col < tileMap.getCols(); col++)
-			{
-				nodes[row][col] = new Node(row, col);
-			}
-		}
+		super(map);
 	}
 
     /**
@@ -57,11 +41,11 @@ public class BreadthFirstSearch {
 		Node endingNode = nodes[endRow][endCol];
 
 		// First area to check is the starting point.
-		notVisitedList.add(startingNode);
-		while(!notVisitedList.isEmpty())
+		notVisited.add(startingNode);
+		while(!notVisited.isEmpty())
 		{
 			// FIFO behavior.
-			Node currentNode = notVisitedList.get(0);
+			Node currentNode = notVisited.get(0);
 			// If we find the object, break the loop.
 			if(currentNode.compareTo(endingNode) == 0) { break; }
 
@@ -70,16 +54,16 @@ public class BreadthFirstSearch {
 			for(Node neighbor : neighbors)
 			{
 				// Check if we have not visited the neighbors.
-				if(!visitedList.contains(neighbor) && !notVisitedList.contains(neighbor))
+				if(!visited.contains(neighbor) && !notVisited.contains(neighbor))
 				{
 					// Set the parent and add the node to the not visited list.
 					neighbor.setParent(currentNode);
-					notVisitedList.add(neighbor);
+					notVisited.add(neighbor);
 				}
 			}
 			// Update lists now that the current node has been visited.
-			visitedList.add(currentNode);
-			notVisitedList.remove(currentNode);
+			visited.add(currentNode);
+			notVisited.remove(currentNode);
 		}
 
 		// Create the path.
@@ -94,44 +78,4 @@ public class BreadthFirstSearch {
 		cleanUp();
 		return path;
 	}
-
-	/**
-	 * This method is used to grap the neighbors
-	 * that are surrounding the current node.
-	 * @param node the current node.
-	 * @return the neighbors of the current node.
-	 */
-	public ArrayList<Node> getNeighbors(Node node) {
-		ArrayList<Node> neighbors = new ArrayList<>();
-
-		Node north, east, south, west;
-		try { north = nodes[node.getRow() - 1][node.getCol()]; }
-		catch(ArrayIndexOutOfBoundsException e) { north = null; }
-		try { east = nodes[node.getRow()][node.getCol() + 1]; }
-		catch(ArrayIndexOutOfBoundsException e) { east = null; }
-		try { south = nodes[node.getRow() + 1][node.getCol()]; }
-		catch(ArrayIndexOutOfBoundsException e) { south = null; }
-		try { west = nodes[node.getRow()][node.getCol() - 1]; }
-		catch(ArrayIndexOutOfBoundsException e) { west = null; }
-
-		// Check North.
-		if(north != null) { neighbors.add(north); }
-		// East.
-		if(east != null) { neighbors.add(east); }
-		// South.
-		if(south != null) { neighbors.add(south); }
-		// West.
-		if(west != null) { neighbors.add(west); }
-
-		return neighbors;
-	}
-
-    /**
-     * Housekeeping.
-     */
-	public void cleanUp() {
-        nodes = null;
-        visitedList.clear();
-        notVisitedList.clear();
-    }
 }
