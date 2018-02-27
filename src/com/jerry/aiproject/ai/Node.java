@@ -15,8 +15,7 @@ public class Node implements Comparable<Node> {
     private Node parentNode;
     // Cost needs to be determined for the A Start algorithm.
     private int distanceFromStart;
-    private int heuristic;
-    // Cost with heuristic value.
+    // Total cost of the move.
     private int cost;
 
     public Node(int r, int c) {
@@ -44,30 +43,12 @@ public class Node implements Comparable<Node> {
         return distanceFromStart;
     }
 
-    public void setDistanceFromStart(int cost) {
-        distanceFromStart = cost;
+    public void setDistanceFromStart(int distance) {
+        distanceFromStart = distance;
     }
 
-    public int getHeuristic() {
-        return heuristic;
-    }
 
-    /**
-     * Heuristic calculation for the
-     * A* search algorithm. It determines
-     * The cost of a node based on its
-     * Distance to the goal node.
-     * @param goalNode the end node.
-     * @return the cost of the node to the distance.
-     */
-    public void setHeuristic(Node goalNode) {
-        int rowCost = Math.abs(goalNode.getRow() - this.getRow());
-        int colCost = Math.abs(goalNode.getCol() - this.getRow());
-
-        heuristic = rowCost + colCost;
-    }
-
-    public void calculateCost() {
+    public void calculateCost(int heuristic) {
         cost = distanceFromStart + heuristic;
     }
 
