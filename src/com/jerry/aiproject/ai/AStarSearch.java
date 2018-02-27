@@ -1,7 +1,6 @@
 package com.jerry.aiproject.ai;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
@@ -22,6 +21,9 @@ import com.jerry.aiproject.gameobjects.GameObject;
  * @author Jerry
  */
 public class AStarSearch extends PathFinder {
+
+    // The heuristic value required for the A* Search.
+    private int heuristic;
 
 	public AStarSearch(TileMap map) {
 		super(map);
@@ -57,8 +59,8 @@ public class AStarSearch extends PathFinder {
 		// Set the cost of the starting node to 0 since we haven't moved yet.
 		startingNode.setDistanceFromStart(0);
 		// Also set the total cost with the heuristic.
-		startingNode.setHeuristic(endingNode);
-		startingNode.calculateCost();
+		heuristic = 0;
+		startingNode.calculateCost(heuristic);
 
 		// First area to check is the starting point.
 		notVisited.add(startingNode);
@@ -75,8 +77,8 @@ public class AStarSearch extends PathFinder {
 			for(Node neighbor : neighbors)
 			{
 				neighbor.setDistanceFromStart(currentNode.getDistanceFromStart() + Node.STEP_COST);
-				neighbor.setHeuristic(endingNode);
-				neighbor.calculateCost();
+				heuristic = calculateHeuristic(neighbor, endingNode);
+				neighbor.calculateCost(heuristic);
 
 				lowestCostNode = neighbor.getCost() < lowestCostNode.getCost()? neighbor : lowestCostNode;
 			}
@@ -102,4 +104,20 @@ public class AStarSearch extends PathFinder {
 		cleanUp();
 		return path;
 	}
+
+    /**
+     * Manhattan distance heuristic calculation
+     * For the A* search algorithm. It determines
+     * The cost of a node based on its distance
+     * From the goal node.
+     * @param fromNode the node to calculate from.
+     * @param goalNode the end node.
+     * @return the cost of the node to the distance.
+     */
+    public int calculateHeuristic(Node fromNode, Node goalNode) {
+        int rowCost = Math.abs(fromNode.getRow() - goalNode.getRow());
+        int colCost = Math.abs(fromNode.getCol() - goalNode.getCol());
+
+        return rowCost + colCost;
+    }
 }
