@@ -5,9 +5,14 @@ import com.jerry.aiproject.data.Sound;
 import java.util.HashMap;
 
 /**
- * Created by jerry on 3/16/18.
+ * This class will hold all the sounds
+ * of the game and handle playing them.
+ * @author Jerry
  */
 public class SoundPlayer {
+
+    public static final int AX_PICKUP = 0,
+        BOW_PICKUP = 1, SWORD_PICKUP = 2, POTION_PICKUP = 3;
 
     private HashMap<Integer, Sound> sounds;
 
@@ -21,12 +26,12 @@ public class SoundPlayer {
     }
 
     private void loadSounds() {
-        sounds.put(0, new Sound("res/ax-pickup.wav"));
-        sounds.put(1, new Sound("res/bow-pickup.wav"));
-        sounds.put(2, new Sound("res/sword-pickup.wav"));
+        sounds.put(AX_PICKUP, new Sound("res/ax-pickup.wav"));
+        sounds.put(BOW_PICKUP, new Sound("res/bow-pickup.wav"));
+        sounds.put(SWORD_PICKUP, new Sound("res/sword-pickup.wav"));
     }
 
     public void play(int key) {
-        sounds.get(key).play();
+        sounds.get(key).play(false);
     }
 }
