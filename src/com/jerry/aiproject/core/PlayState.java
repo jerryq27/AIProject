@@ -3,6 +3,7 @@ package com.jerry.aiproject.core;
 import com.jerry.aiproject.ai.AStarSearch;
 import com.jerry.aiproject.ai.BreadthFirstSearch;
 import com.jerry.aiproject.ai.PathFinder;
+import com.jerry.aiproject.data.Sound;
 import com.jerry.aiproject.data.TileMap;
 import com.jerry.aiproject.gameobjects.GameObject;
 import com.jerry.aiproject.gameobjects.HealthPotion;
@@ -10,6 +11,7 @@ import com.jerry.aiproject.gameobjects.Player;
 import com.jerry.aiproject.gameobjects.Weapon;
 import com.jerry.aiproject.utils.GameObjectSpawner;
 import com.jerry.aiproject.ai.Path;
+import com.jerry.aiproject.utils.SoundPlayer;
 import com.jerry.aiproject.utils.SpriteLoader;
 
 import javax.swing.*;
@@ -91,6 +93,7 @@ public class PlayState extends GameState {
                 System.out.println("Path generation took: " + (double)(endTime - startTime)/1000.0 + " seconds.\n");
 
                 path.printPath();
+                // player.moveAlongPath(tileMap, path);
             }
             // generateNewPath = player.moveAlongPath(tileMap, path);
             // System.out.println(generateNewPath);
@@ -122,6 +125,7 @@ public class PlayState extends GameState {
 
 
 //		// TEST: Works!!
+        SoundPlayer soundPlayer = new SoundPlayer();
         for (int i = 0; i < spawner.getItems().size(); i++)
         {
             GameObject currentObject = spawner.getObject(i);
@@ -135,7 +139,21 @@ public class PlayState extends GameState {
                 }
                 else if(currentObject instanceof Weapon)
                 {
-                    System.out.println("Got a weapon.");
+                    switch(((Weapon)currentObject).getWeaponType())
+                    {
+                        case AX:
+                            System.out.println("Got the Ax.");
+                            soundPlayer.play(SoundPlayer.AX_PICKUP);
+                            break;
+                        case BOW:
+                            soundPlayer.play(SoundPlayer.BOW_PICKUP);
+                            System.out.println("Got the Bow.");
+                            break;
+                        case SWORD:
+                            soundPlayer.play(SoundPlayer.SWORD_PICKUP);
+                            System.out.println("Got the Sword.");
+                            break;
+                    }
                 }
                 spawner.removeObject(spawner.getObject(i));
             }
@@ -248,6 +266,7 @@ public class PlayState extends GameState {
             for(Integer key : stopMovementKeyMap.keySet())
             {
                 String action = stopMovementKeyMap.get(key);
+                // Specifying true as the third argument states that this is a key released event.
                 inputMap.put(KeyStroke.getKeyStroke(key, 0, true), action);
                 actionMap.put(action, new AbstractAction() {
                     @Override
