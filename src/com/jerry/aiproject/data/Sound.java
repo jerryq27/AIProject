@@ -4,12 +4,15 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This class represents a sound
+ * In the game. It also handles
+ * The functionality needed to
+ * Play or loop a certain sound.
+ * @author Jerry
+ */
 public class Sound {
 
-    public enum SoundType {
-        MUSIC,
-        EFFECT
-    }
     private AudioInputStream audioStream;
     private Clip audioClip;
 
@@ -19,13 +22,20 @@ public class Sound {
         catch(IOException e) { System.out.println("Error in loading the file: " + e.getMessage()); }
     }
 
-    public void play() {
+    public void play(boolean isLooping) {
         try {
+            // Passing null fixed the invalid format issue.
             audioClip = AudioSystem.getClip(null);
             audioClip.open(audioStream);
-            audioClip.start();
+            if(isLooping) audioClip.loop(Clip.LOOP_CONTINUOUSLY);
+            else audioClip.start();
         }
         catch(LineUnavailableException e) { e.printStackTrace(); }
         catch(IOException e) { e.printStackTrace(); }
     }
+
+    public void stop() {
+        audioClip.stop();
+    }
+
 }
