@@ -58,6 +58,10 @@ public class Weapon extends GameObject {
 		//g2d.drawRect(getBounds().x, getBounds().y, getBounds().width, getBounds().height);
 	}
 
+	public WeaponType getWeaponType() {
+        return weaponType;
+    }
+
 	@Override
 	public Rectangle getBounds() {
 		return new Rectangle(getX(), getY(), Sprite.WIDTH, Sprite.HEIGHT);
