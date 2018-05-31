@@ -13,29 +13,24 @@ import java.io.IOException;
  */
 public class Sound {
 
-    private AudioInputStream audioStream;
-    private Clip audioClip;
+    public enum SoundType {
+        EFFECT,
+        MUSIC
+    }
+    private SoundType soundType;
+    private File soundFile;
 
-    public Sound(String soundFile) {
-        try { audioStream = AudioSystem.getAudioInputStream(new File(soundFile)); }
-        catch(UnsupportedAudioFileException e) { System.out.println("Audio file not supported: " + e.getMessage()); }
-        catch(IOException e) { System.out.println("Error in loading the file: " + e.getMessage()); }
+    public Sound(String path, SoundType type) {
+        soundFile = new File(path);
+        soundType = type;
     }
 
-    public void play(boolean isLooping) {
-        try {
-            // Passing null fixed the invalid format issue.
-            audioClip = AudioSystem.getClip(null);
-            audioClip.open(audioStream);
-            if(isLooping) audioClip.loop(Clip.LOOP_CONTINUOUSLY);
-            else audioClip.start();
-        }
-        catch(LineUnavailableException e) { e.printStackTrace(); }
-        catch(IOException e) { e.printStackTrace(); }
+    public File getSoundFile() {
+        return soundFile;
     }
 
-    public void stop() {
-        audioClip.stop();
+    public SoundType getSoundType() {
+        return soundType;
     }
 
 }
